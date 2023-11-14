@@ -1,11 +1,12 @@
 import React, {FC} from 'react';
+import {Task} from "./tasks/task/Task";
 
 type TodoListPropsType = {
     title: string
     tasks: Array<TaskPropsType>
 }
 
-type TaskPropsType = {
+export type TaskPropsType = {
     id: number
     title: string
     isDone: boolean
@@ -18,9 +19,7 @@ export const Todolist: FC<TodoListPropsType> = ({title, tasks}) => {
     const listItems: Array<JSX.Element> = []
     //Создаем элемент listItem и прогоняем через цикл, получая количество <li> равное количеству элекментов в изначальном массиве tasks_1, tasks_2
     for (let i = 0; i < tasks.length; i++) {
-        const listItem: JSX.Element = <li>
-            <input type="checkbox" checked={tasks[i].isDone}/> <span>{tasks[i].title}</span>
-        </li>
+        const listItem: JSX.Element = <Task id={tasks[i].id} title={tasks[i].title} isDone={tasks[i].isDone}/>
         //Пушим в созданный ранее пустой массив
         listItems.push(listItem)
     }
