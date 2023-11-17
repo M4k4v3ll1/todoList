@@ -1,9 +1,12 @@
 import React, {FC} from 'react';
-import {Task} from "./tasks/task/Task";
+import {Button} from "./button/Button";
+import {FilterValuesType} from "../App";
 
-type TodoListPropsType = {
+export type TodoListPropsType = {
     title: string
     tasks: Array<TaskPropsType>
+    removeTasks: (id: number) => void
+    changeFilter: (value: FilterValuesType) => void
 }
 
 export type TaskPropsType = {
@@ -13,39 +16,48 @@ export type TaskPropsType = {
 }
 
 // В props сразу делаем деструктурирующее присваивание: вместо (props) сразу делаем ({title, tasks}). И в дальнейшем не нужно писать props.title, а сразу title
-export const Todolist: FC<TodoListPropsType> = ({title, tasks}) => {
-    //Делаем список задач на NativeJS через цикл for
-    //Создаем пустой массив listItems
-    const listItems: Array<JSX.Element> = []
-    //Создаем элемент listItem и прогоняем через цикл, получая количество <li> равное количеству элекментов в изначальном массиве tasks_1, tasks_2
-    for (let i = 0; i < tasks.length; i++) {
-        const listItem: JSX.Element = <Task id={tasks[i].id} title={tasks[i].title} isDone={tasks[i].isDone}/>
-        //Пушим в созданный ранее пустой массив
-        listItems.push(listItem)
-    }
-    return (
-        <div>
-            <h3>{title}</h3>
-            <div>
-                <input/>
-                <button>+</button>
-            </div>
+export const Todolist: FC<TodoListPropsType> = ({title, tasks, removeTasks, changeFilter}) => {
+    /* //Делаем список задач на NativeJS через цикл for
+     //Создаем пустой массив listItems
+     const listItems: Array<JSX.Element> = []
+     //Создаем элемент listItem и прогоняем через цикл, получая количество <li> равное количеству элементов в изначальном массиве tasks_1, tasks_2
+     for (let i = 0; i < tasks.length; i++) {
+         debugger
+         const onClickRemoveTask = () => removeTask(tasks[i].id)
+         const listItem: JSX.Element = <li>
+             <input type="checkbox" checked={tasks[i].isDone}/>
+             <span>{tasks[i].title}</span>
+             <Button name={'x'} onClickHandler={onClickRemoveTask} />
+         </li>
+         //Пушим в созданный ранее пустой массив
+         listItems.push(listItem)
+     }*/
 
-            <ul>
-                {/*Вывод массива из цикла for*/}
-                {listItems}
-                {/*Делаем список задач через метод .map*/}
-                {/*{
-                    tasks.map((t: TaskPropsType) => {
-                        return <li><input type="checkbox" checked={t.isDone}/> <span>{t.title}</span></li>
-                    })
-                }*/}
-            </ul>
-            <div>
-                <button>All</button>
-                <button>Active</button>
-                <button>Completed</button>
-            </div>
+    const listItem: JSX.Element = tasks.length === 0 ?
+        <div>Please add task</div>
+        : <ul> {
+            tasks.map((t) => {
+                const removeTask = () => removeTasks(t.id)
+                return <>
+                    <li><input type="checkbox" checked={t.isDone}/>
+                        <span>{t.title}</span>
+                        <Button name={'x'}
+                                onClick={removeTask}
+                        />
+                    </li>
+                </>
+            })}
+        </ul>
+
+    return <div>
+        <h3>{title}</h3>
+        <div>
+            <input/>
+            <Button name={'+'}/>
+            {listItem}
+            <Button name={'All'} onClick={() => changeFilter('All')}/>
+            <Button name={'Active'} onClick={() => changeFilter('Active')}/>
+            <Button name={'Completed'} onClick={() => changeFilter('Completed')}/>
         </div>
-    )
+    </div>
 }
