@@ -1,4 +1,4 @@
-import React, {ChangeEvent, FC, useState} from 'react';
+import React, {FC, useRef} from 'react';
 import {Button} from "./button/Button";
 import {FilterValuesType} from "../App";
 
@@ -58,41 +58,20 @@ export const Todolist: FC<TodoListPropsType> = (
             })}
         </ul>
 
-    const [newTaskTitle, setTitle] = useState('')
-
+    const taskTitleInput = useRef<HTMLInputElement>(null)
 
     const onClickAddTask = () => {
-        addTask(newTaskTitle)
-        setTitle('')
+        if (taskTitleInput.current) {
+            const newTaskTitle = taskTitleInput.current.value
+            addTask(newTaskTitle)
+            taskTitleInput.current.value = ''
+        }
     }
-
-    const onKeyDownAddTask = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        e.key === 'Enter'
-        && Boolean(newTaskTitle)
-        && newTaskTitle.length < 15
-        && onClickAddTask()
-    }
-
-    const onChangeSetTitle = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.currentTarget.value.length <= 15) {setTitle(e.currentTarget.value)}
-    }
-
-    const maxTitleLengthError = newTaskTitle.length >= 15
-
     return <div>
         <h3>{title}</h3>
         <div>
-            <input
-                value={newTaskTitle}
-                onChange={onChangeSetTitle}
-                onKeyDown={onKeyDownAddTask}
-            />
-            <Button
-                name={'+'}
-                onClick={onClickAddTask}
-                disabled={!newTaskTitle || maxTitleLengthError}
-            />
-            {maxTitleLengthError && <div style={{color: 'red'}}>Your tasktitle is too long. Use backspace ;)</div>}
+            <input ref={taskTitleInput}/>
+            <Button name={'+'} onClick={onClickAddTask}/>
             {listItem}
             <Button name={'All'} onClick={() => changeFilter('All')}/>
             <Button name={'Active'} onClick={() => changeFilter('Active')}/>

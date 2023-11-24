@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import './App.css';
 import {TaskPropsType, Todolist} from './components/Todolist';
+import {v1} from "uuid";
+import {logDOM} from "@testing-library/react";
 
 export type FilterValuesType = 'All' | 'Active' | 'Completed'
 
@@ -10,16 +12,11 @@ function App() {
     /*const todoListTitle_2 = "Songs"*/
 
     //state
-    /*const tasks1 = [
-        {id: 1, title: "HTML&CSS", isDone: true},
-        {id: 2, title: "JS", isDone: true},
-        {id: 3, title: "ReactJS", isDone: false}
-    ]*/
 
     const [tasks, setTasks] = useState<Array<TaskPropsType>>([      //init ial state
-        {id: 1, title: "HTML&CSS", isDone: true},
-        {id: 2, title: "JS", isDone: true},
-        {id: 3, title: "ReactJS", isDone: false}
+        {id: v1(), title: "HTML&CSS", isDone: true},
+        {id: v1(), title: "JS", isDone: true},
+        {id: v1(), title: "ReactJS", isDone: false}
     ])
     const [filter, setFilter] = useState<FilterValuesType>('All')
     /*//Создаем функцию удаление задач на nativeJS, которая через onClick по кнопке будет принимать id таски.
@@ -27,24 +24,17 @@ function App() {
         //Создаем новый пустой массив nextState
         const nextState: Array<TaskPropsType> = []
         //Через пропсы у функции получаем taskId и прогоняем через цикл. Внутри цикла пишем условие, что если id в массиве tasks не совпадает с пришедшей через пропсы taskId, то пушим таску в новый массив nextState, а если совпадает, то ничего не делаем (как бы удаляя ее из нового массива).
-        for (let i = 0; i < tasks.length; i++) {
-            if (tasks[i].id !== taskId) {
+        for (let i = 0; i < tasks.lengtст {
                 nextState. push(tasks[i])
             }
         }*/
 
     //Создаем функцию удаления задач на .filter, которая через onClick по кнопке будет принимать id таски.
-    function removeTasks(id: number) {
+    function removeTasks(id: string) {
         let nextState = tasks.filter(t => t.id !== id)
         //Через функцию setTasks хука useState пушим новый массив nextState
         setTasks(nextState)
     }
-
-    /*const tasks2 = [
-        {id: 1, title: "Hello world", isDone: true},
-        {id: 2, title: "I am Happy", isDone: false},
-        {id: 3, title: "Yo", isDone: false}
-    ]*/
 
     function changeFilter(value: FilterValuesType) {
         setFilter(value)
@@ -57,6 +47,18 @@ function App() {
         tasksForTodoList = tasks.filter(t => t.isDone === false)
     }
 
+
+    //create task
+    const addTask = (title: string) => {
+        const newTask: TaskPropsType = {
+            id: v1(),
+            title: title,
+            isDone: false
+        }
+        const nextState: Array<TaskPropsType> = [newTask, ...tasks]
+        setTasks(nextState)
+    }
+
     //UI
     return (
         <div className="App">
@@ -64,10 +66,8 @@ function App() {
                       tasks={tasksForTodoList}
                       removeTasks={removeTasks}
                       changeFilter={changeFilter}
+                      addTask={addTask}
             />
-            {/*<Todolist    title: todoListTitle_1
-                            tasks: tasks2
-                            removeTask:removeTask />*/}
         </div>
     );
 }
