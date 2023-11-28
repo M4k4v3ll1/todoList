@@ -3,15 +3,14 @@ import React, {FC} from 'react';
 type ButtonPropsType = {
     name: string
     onClick?: () => void
-    disabled?: boolean
+    className?: string
 }
 
-export const Button: FC<ButtonPropsType> = ({name, onClick, disabled}) => {
+export const Button: FC<ButtonPropsType> = ({name, onClick, className}) => {
     return (
         <button
-            onClick={onClick}
-            disabled={disabled}
-        >
+            className={className}
+            onClick={onClick} >
             {name}
         </button>
     );

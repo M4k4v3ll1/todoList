@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import './App.css';
 import {TaskPropsType, Todolist} from './components/Todolist';
 import {v1} from "uuid";
-import {logDOM} from "@testing-library/react";
 
 export type FilterValuesType = 'All' | 'Active' | 'Completed'
 
@@ -12,11 +11,16 @@ function App() {
     /*const todoListTitle_2 = "Songs"*/
 
     //state
+    /*const tasks1 = [
+        {id: 1, title: "HTML&CSS", isDone: true},
+        {id: 2, title: "JS", isDone: true},
+        {id: 3, title: "ReactJS", isDone: false}
+    ]*/
 
     const [tasks, setTasks] = useState<Array<TaskPropsType>>([      //init ial state
-        {id: v1(), title: "HTML&CSS", isDone: true},
+        {id: v1(), title: "HTML&CSS", isDone: false},
         {id: v1(), title: "JS", isDone: true},
-        {id: v1(), title: "ReactJS", isDone: false}
+        {id: v1(), title: "ReactJS", isDone: true}
     ])
     const [filter, setFilter] = useState<FilterValuesType>('All')
     /*//Создаем функцию удаление задач на nativeJS, которая через onClick по кнопке будет принимать id таски.
@@ -24,7 +28,8 @@ function App() {
         //Создаем новый пустой массив nextState
         const nextState: Array<TaskPropsType> = []
         //Через пропсы у функции получаем taskId и прогоняем через цикл. Внутри цикла пишем условие, что если id в массиве tasks не совпадает с пришедшей через пропсы taskId, то пушим таску в новый массив nextState, а если совпадает, то ничего не делаем (как бы удаляя ее из нового массива).
-        for (let i = 0; i < tasks.lengtст {
+        for (let i = 0; i < tasks.length; i++) {
+            if (tasks[i].id !== taskId) {
                 nextState. push(tasks[i])
             }
         }*/
@@ -36,27 +41,29 @@ function App() {
         setTasks(nextState)
     }
 
+    function addTask(newTaskTitle: string) {
+        let newTask = {id: v1(), title: newTaskTitle, isDone: false}
+        let newTasks = [newTask, ...tasks]
+        setTasks(newTasks)
+    }
+
+    function changeStatus(id: string, isDone: boolean) {
+        let task = tasks.find(t => t.id === id);
+        if (task) {
+            task.isDone = isDone;
+        }
+        setTasks([...tasks])
+    }
+
     function changeFilter(value: FilterValuesType) {
         setFilter(value)
     }
 
     let tasksForTodoList = tasks
     if (filter === 'Completed') {
-        tasksForTodoList = tasks.filter(t => t.isDone === true)
+        tasksForTodoList = tasks.filter(t => t.isDone)
     } else if (filter === 'Active') {
-        tasksForTodoList = tasks.filter(t => t.isDone === false)
-    }
-
-
-    //create task
-    const addTask = (title: string) => {
-        const newTask: TaskPropsType = {
-            id: v1(),
-            title: title,
-            isDone: false
-        }
-        const nextState: Array<TaskPropsType> = [newTask, ...tasks]
-        setTasks(nextState)
+        tasksForTodoList = tasks.filter(t => t.isDone)
     }
 
     //UI
@@ -67,6 +74,8 @@ function App() {
                       removeTasks={removeTasks}
                       changeFilter={changeFilter}
                       addTask={addTask}
+                      changeTaskStatus={changeStatus}
+                      filter={filter}
             />
         </div>
     );
