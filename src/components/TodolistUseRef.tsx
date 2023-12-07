@@ -73,9 +73,9 @@ export const Todolist: FC<TodoListPropsType> = (
             <input ref={taskTitleInput}/>
             <Button name={'+'} onClick={onClickAddTask}/>
             {listItem}
-            <Button name={'All'} onClick={() => changeFilter('All')}/>
-            <Button name={'Active'} onClick={() => changeFilter('Active')}/>
-            <Button name={'Completed'} onClick={() => changeFilter('Completed')}/>
+            <Button name={'All'} onClick={() => changeFilter('all')}/>
+            <Button name={'active'} onClick={() => changeFilter('active')}/>
+            <Button name={'completed'} onClick={() => changeFilter('completed')}/>
         </div>
     </div>
 }

@@ -1,82 +1,88 @@
 import React, {useState} from 'react';
 import './App.css';
-import {TaskPropsType, Todolist} from './components/Todolist';
+import {Todolist} from './components/Todolist';
 import {v1} from "uuid";
 
-export type FilterValuesType = 'All' | 'Active' | 'Completed'
+export type FilterValuesType = 'all' | 'active' | 'completed'
+type todoListsType = {
+    id: string
+    title: string
+    filter: FilterValuesType
+}
 
 function App() {
     //BLL
-    const todoListTitle_1 = "What to learn"
-    /*const todoListTitle_2 = "Songs"*/
+    const todoListID1 = v1()
+    const todoListID2 = v1()
 
-    //state
-    /*const tasks1 = [
-        {id: 1, title: "HTML&CSS", isDone: true},
-        {id: 2, title: "JS", isDone: true},
-        {id: 3, title: "ReactJS", isDone: false}
-    ]*/
-
-    const [tasks, setTasks] = useState<Array<TaskPropsType>>([      //init ial state
-        {id: v1(), title: "HTML&CSS", isDone: false},
-        {id: v1(), title: "JS", isDone: true},
-        {id: v1(), title: "ReactJS", isDone: true}
+    let [todoLists, setTodoLists] = useState<todoListsType[]>([
+        {id: todoListID1, title: 'What to learn', filter: 'all'},
+        {id: todoListID2, title: 'What to buy', filter: 'all'},
     ])
-    const [filter, setFilter] = useState<FilterValuesType>('All')
-    /*//Создаем функцию удаление задач на nativeJS, которая через onClick по кнопке будет принимать id таски.
-    function removeTask(taskId: number) {
-        //Создаем новый пустой массив nextState
-        const nextState: Array<TaskPropsType> = []
-        //Через пропсы у функции получаем taskId и прогоняем через цикл. Внутри цикла пишем условие, что если id в массиве tasks не совпадает с пришедшей через пропсы taskId, то пушим таску в новый массив nextState, а если совпадает, то ничего не делаем (как бы удаляя ее из нового массива).
-        for (let i = 0; i < tasks.length; i++) {
-            if (tasks[i].id !== taskId) {
-                nextState. push(tasks[i])
-            }
-        }*/
 
-    //Создаем функцию удаления задач на .filter, которая через onClick по кнопке будет принимать id таски.
-    function removeTasks(id: string) {
-        let nextState = tasks.filter(t => t.id !== id)
-        //Через функцию setTasks хука useState пушим новый массив nextState
-        setTasks(nextState)
+    let [tasks, setTasks] = useState({
+        [todoListID1]: [
+            {id: v1(), title: "HTML&CSS", isDone: true},
+            {id: v1(), title: "JS", isDone: true},
+            {id: v1(), title: "ReactJS", isDone: false},
+            {id: v1(), title: "Rest API", isDone: false},
+            {id: v1(), title: "GraphQL", isDone: false},
+        ],
+        [todoListID2]: [
+            {id: v1(), title: "Book", isDone: true},
+            {id: v1(), title: "Milk", isDone: true},
+            {id: v1(), title: "Tea", isDone: false},
+        ]
+    });
+
+    function removeTasks(todoListID: string, taskID: string) {
+        setTasks({...tasks, [todoListID]: tasks[todoListID].filter(el => el.id !== taskID)})
     }
 
-    function addTask(newTaskTitle: string) {
+    function addTask(todoListID: string, newTaskTitle: string) {
         let newTask = {id: v1(), title: newTaskTitle, isDone: false}
-        let newTasks = [newTask, ...tasks]
-        setTasks(newTasks)
+        setTasks({...tasks, [todoListID]: [newTask, ...tasks[todoListID]]})
     }
 
-    function changeStatus(id: string, isDone: boolean) {
-        let task = tasks.find(t => t.id === id);
-        if (task) {
-            task.isDone = isDone;
-        }
-        setTasks([...tasks])
+    function changeTaskStatus(todoListID: string, id: string, isDone: boolean) {
+        setTasks({...tasks, [todoListID]: tasks[todoListID].map(el => el.id === id ? {...el, isDone: isDone} : el)})
     }
 
-    function changeFilter(value: FilterValuesType) {
-        setFilter(value)
+    function changeFilter(todoListID: string, value: FilterValuesType) {
+        setTodoLists(todoLists.map(el => el.id === todoListID ? {...el, filter: value} : el))
     }
 
-    let tasksForTodoList = tasks
-    if (filter === 'Completed') {
-        tasksForTodoList = tasks.filter(t => t.isDone)
-    } else if (filter === 'Active') {
-        tasksForTodoList = tasks.filter(t => t.isDone)
+    function removeTodoList(todoListID: string) {
+        setTodoLists(todoLists.filter(el => el.id !== todoListID))
+        delete tasks[todoListID]
     }
 
     //UI
     return (
         <div className="App">
-            <Todolist title={todoListTitle_1}
-                      tasks={tasksForTodoList}
-                      removeTasks={removeTasks}
-                      changeFilter={changeFilter}
-                      addTask={addTask}
-                      changeTaskStatus={changeStatus}
-                      filter={filter}
-            />
+            {todoLists.map(el => {
+                let tasksForTodoList = tasks[el.id]
+                if (el.filter === 'completed') {
+                    tasksForTodoList = tasks[el.id].filter(t => t.isDone)
+                }
+                if (el.filter === 'active') {
+                    tasksForTodoList = tasks[el.id].filter(t => !t.isDone)
+                }
+                return (
+                    <Todolist
+                        key={el.id}
+                        todoListID={el.id}
+                        title={el.title}
+                        tasks={tasksForTodoList}
+                        removeTasks={removeTasks}
+                        changeFilter={changeFilter}
+                        addTask={addTask}
+                        changeTaskStatus={changeTaskStatus}
+                        filter={el.filter}
+                        removeTodoList={removeTodoList}
+                    />
+                )
+            })}
         </div>
     );
 }
