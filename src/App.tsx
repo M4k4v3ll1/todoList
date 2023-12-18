@@ -1,13 +1,18 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Todolist} from './components/Todolist';
+import {TaskType, Todolist} from './components/Todolist';
 import {v1} from "uuid";
+import {AddItemForm} from "./components/AddItemForm";
 
 export type FilterValuesType = 'all' | 'active' | 'completed'
 type todoListsType = {
     id: string
     title: string
     filter: FilterValuesType
+}
+
+type TasksStateType = {
+    [key: string]: Array<TaskType>
 }
 
 function App() {
@@ -20,7 +25,7 @@ function App() {
         {id: todoListID2, title: 'What to buy', filter: 'all'},
     ])
 
-    let [tasks, setTasks] = useState({
+    let [tasks, setTasks] = useState<TasksStateType>({
         [todoListID1]: [
             {id: v1(), title: "HTML&CSS", isDone: true},
             {id: v1(), title: "JS", isDone: true},
@@ -57,9 +62,31 @@ function App() {
         delete tasks[todoListID]
     }
 
+    function addTodoList(todoListTitle: string) {
+        let newTodoList: todoListsType = {id: v1(), title: todoListTitle, filter: 'all'}
+        setTodoLists([newTodoList, ...todoLists])
+        setTasks({...tasks, [newTodoList.id]: []})
+    }
+
+    function changeTaskTitle(todoListID: string, id: string, newValue: string) {
+        // debugger
+        // let todoListTasks = tasks[todoListID]
+        // let task = todoListTasks.find(el => el.id === id)
+        // if (task) {
+        //     task.title = newValue
+        //     setTasks({...tasks})
+        // }
+        setTasks({...tasks, [todoListID]: tasks[todoListID].map(el => el.id === id ? {...el, title: newValue} : el)})
+    }
+
+    function changeTodoListTitle(todoListID: string, newTodoListTitle: string) {
+        setTodoLists(todoLists.map(el => el.id === todoListID ? {...el, title: newTodoListTitle} : el))
+    }
+
     //UI
     return (
         <div className="App">
+            <AddItemForm addItem={addTodoList}/>
             {todoLists.map(el => {
                 let tasksForTodoList = tasks[el.id]
                 if (el.filter === 'completed') {
@@ -78,6 +105,8 @@ function App() {
                         changeFilter={changeFilter}
                         addTask={addTask}
                         changeTaskStatus={changeTaskStatus}
+                        changeTaskTitle={changeTaskTitle}
+                        changeTodoListTitle={changeTodoListTitle}
                         filter={el.filter}
                         removeTodoList={removeTodoList}
                     />
