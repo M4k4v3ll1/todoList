@@ -1,5 +1,5 @@
 import React, {FC, useRef} from 'react';
-import {Button} from "./button/Button";
+import {ButtonComponent} from "./button/ButtonComponent";
 import {FilterValuesType} from "../App";
 
 export type TodoListPropsType = {
@@ -36,7 +36,7 @@ export const Todolist: FC<TodoListPropsType> = (
          const listItem: JSX.Element = <li>
              <input type="checkbox" checked={tasks[i].isDone}/>
              <span>{tasks[i].title}</span>
-             <Button name={'x'} onClickHandler={onClickRemoveTask} />
+             <ButtonComponent name={'x'} onClickHandler={onClickRemoveTask} />
          </li>
          //Пушим в созданный ранее пустой массив
          listItems.push(listItem)
@@ -50,8 +50,8 @@ export const Todolist: FC<TodoListPropsType> = (
                 return <>
                     <li><input type="checkbox" checked={t.isDone}/>
                         <span>{t.title}</span>
-                        <Button name={'x'}
-                                onClick={removeTask}
+                        <ButtonComponent name={'x'}
+                                         onClick={removeTask}
                         />
                     </li>
                 </>
@@ -71,11 +71,11 @@ export const Todolist: FC<TodoListPropsType> = (
         <h3>{title}</h3>
         <div>
             <input ref={taskTitleInput}/>
-            <Button name={'+'} onClick={onClickAddTask}/>
+            <ButtonComponent name={'+'} onClick={onClickAddTask}/>
             {listItem}
-            <Button name={'All'} onClick={() => changeFilter('all')}/>
-            <Button name={'active'} onClick={() => changeFilter('active')}/>
-            <Button name={'completed'} onClick={() => changeFilter('completed')}/>
+            <ButtonComponent name={'All'} onClick={() => changeFilter('all')}/>
+            <ButtonComponent name={'active'} onClick={() => changeFilter('active')}/>
+            <ButtonComponent name={'completed'} onClick={() => changeFilter('completed')}/>
         </div>
     </div>
 }

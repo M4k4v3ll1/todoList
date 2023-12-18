@@ -1,8 +1,10 @@
 import React, {ChangeEvent, FC} from 'react';
-import {Button} from "./button/Button";
 import {FilterValuesType} from "../App";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
+import {Button, Checkbox, IconButton} from "@mui/material";
+import {Delete} from "@mui/icons-material";
+
 
 export type TodoListPropsType = {
     todoListID: string
@@ -42,7 +44,7 @@ export const Todolist: FC<TodoListPropsType> = (
 
     const listItem: JSX.Element = tasks.length === 0 ?
         <div>Please add task</div>
-        : <ul> {
+        : <div> {
             tasks.map((t) => {
                 const onRemoveTaskHandler = () => removeTasks(todoListID, t.id)
                 const onChangeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -51,9 +53,8 @@ export const Todolist: FC<TodoListPropsType> = (
                 const onChangeTitleHandler = (newValue: string) => {
                     changeTaskTitle(todoListID, t.id, newValue)
                 }
-                return <li key={t.id}>
-                    <input
-                        type="checkbox"
+                return <div key={t.id}>
+                    <Checkbox
                         onChange={onChangeStatusHandler}
                         checked={t.isDone}
                     />
@@ -62,12 +63,12 @@ export const Todolist: FC<TodoListPropsType> = (
                         isDone={t.isDone}
                         onChange={onChangeTitleHandler}
                     />
-                    <Button name={'x'}
-                            onClick={onRemoveTaskHandler}
-                    />
-                </li>
+                    <IconButton onClick={onRemoveTaskHandler}>
+                        <Delete/>
+                    </IconButton>
+                </div>
             })}
-        </ul>
+        </div>
     const onClickAllHandler = () => changeFilter(todoListID, 'all')
     const onClickActiveHandler = () => changeFilter(todoListID, 'active')
     const onClickCompletedHandler = () => changeFilter(todoListID, 'completed')
@@ -87,24 +88,26 @@ export const Todolist: FC<TodoListPropsType> = (
                 title={title}
                 onChange={changeTodoListTitleHandler}
             />
-            <button onClick={onClickRemoveTodoListHandler}>x</button>
+            <IconButton onClick={onClickRemoveTodoListHandler}>
+                <Delete/>
+            </IconButton>
         </h3>
 
         <div>
             <AddItemForm addItem={addItem}/>
             {listItem}
             <Button
-                className={filter === 'all' ? 'active_filter' : ''}
+                variant={filter === 'all' ? 'contained' : 'text'}
                 name={'All'}
-                onClick={onClickAllHandler}/>
+                onClick={onClickAllHandler}>All</Button>
             <Button
-                className={filter === 'active' ? 'active_filter' : ''}
+                variant={filter === 'active' ? 'contained' : 'text'}
                 name={'active'}
-                onClick={onClickActiveHandler}/>
+                onClick={onClickActiveHandler}>Active</Button>
             <Button
-                className={filter === 'completed' ? 'active_filter' : ''}
+                variant={filter === 'completed' ? 'contained' : 'text'}
                 name={'completed'}
-                onClick={onClickCompletedHandler}/>
+                onClick={onClickCompletedHandler}>Completed</Button>
         </div>
     </div>
 }
