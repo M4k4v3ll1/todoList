@@ -1,7 +1,9 @@
-import React, {useState} from 'react';
+import React, {useReducer} from 'react';
 import './App.css';
-import {TaskPropsType, Todolist} from './components/Todolist';
+import {Todolist} from './components/Todolist';
 import {v1} from "uuid";
+import {addTaskAC, changeStatusAC, removeTasksAC, taskReducer} from "./redusers/tasksReducer";
+import {changeFilterAC, filterReducer} from "./redusers/filterReducer";
 
 export type FilterValuesType = 'All' | 'Active' | 'Completed'
 
@@ -17,12 +19,12 @@ function App() {
         {id: 3, title: "ReactJS", isDone: false}
     ]*/
 
-    const [tasks, setTasks] = useState<Array<TaskPropsType>>([      //init ial state
+    const [tasks, dispatchTasks] = useReducer(taskReducer, [      //initial state
         {id: v1(), title: "HTML&CSS", isDone: false},
         {id: v1(), title: "JS", isDone: true},
         {id: v1(), title: "ReactJS", isDone: true}
     ])
-    const [filter, setFilter] = useState<FilterValuesType>('All')
+    const [filter, dispatchFilter] = useReducer(filterReducer, 'All')
     /*//Создаем функцию удаление задач на nativeJS, которая через onClick по кнопке будет принимать id таски.
     function removeTask(taskId: number) {
         //Создаем новый пустой массив nextState
@@ -36,34 +38,26 @@ function App() {
 
     //Создаем функцию удаления задач на .filter, которая через onClick по кнопке будет принимать id таски.
     function removeTasks(id: string) {
-        let nextState = tasks.filter(t => t.id !== id)
-        //Через функцию setTasks хука useState пушим новый массив nextState
-        setTasks(nextState)
+        dispatchTasks(removeTasksAC(id))
     }
 
-    function addTask(newTaskTitle: string) {
-        let newTask = {id: v1(), title: newTaskTitle, isDone: false}
-        let newTasks = [newTask, ...tasks]
-        setTasks(newTasks)
+    function addTask(title: string) {
+        dispatchTasks(addTaskAC(title))
     }
 
     function changeStatus(id: string, isDone: boolean) {
-        let task = tasks.find(t => t.id === id);
-        if (task) {
-            task.isDone = isDone;
-        }
-        setTasks([...tasks])
+        dispatchTasks(changeStatusAC(id, isDone))
     }
 
     function changeFilter(value: FilterValuesType) {
-        setFilter(value)
+        dispatchFilter(changeFilterAC(value))
     }
 
     let tasksForTodoList = tasks
     if (filter === 'Completed') {
         tasksForTodoList = tasks.filter(t => t.isDone)
     } else if (filter === 'Active') {
-        tasksForTodoList = tasks.filter(t => t.isDone)
+        tasksForTodoList = tasks.filter(t => !t.isDone)
     }
 
     //UI

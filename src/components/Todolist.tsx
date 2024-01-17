@@ -4,7 +4,7 @@ import {FilterValuesType} from "../App";
 
 export type TodoListPropsType = {
     title: string
-    tasks: Array<TaskPropsType>
+    tasks: TaskType[]
     removeTasks: (id: string) => void
     changeFilter: (value: FilterValuesType) => void
     addTask: (newTaskTitle: string) => void
@@ -12,7 +12,7 @@ export type TodoListPropsType = {
     filter: FilterValuesType
 }
 
-export type TaskPropsType = {
+export type TaskType = {
     id: string
     title: string
     isDone: boolean
@@ -57,6 +57,7 @@ export const Todolist: FC<TodoListPropsType> = (
                     <input
                         type="checkbox"
                         onChange={onChangeStatusHandler}
+                        checked={t.isDone}
             />
                     <span className={t.isDone ? 'is_done' : ''}>{t.title}</span>
                     <Button name={'x'}
