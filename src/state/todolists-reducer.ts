@@ -8,6 +8,7 @@ export type RemoveTodoListActionType = {
 export type AddTodoListActionType = {
     type: 'ADD-TODOLIST',
     title: string
+    todoListID: string
 }
 export type ChangeTodoListTitleActionType = {
     type: 'CHANGE-TODOLIST-TITLE',
@@ -19,32 +20,32 @@ export type ChangeTodoListFilterActionType = {
     id: string
     filter: FilterValuesType
 }
-type ActionTypes =
+type ActionsTypes =
     RemoveTodoListActionType
     | AddTodoListActionType
     | ChangeTodoListTitleActionType
     | ChangeTodoListFilterActionType
-export const RemoveTodoListAC = (id: string): RemoveTodoListActionType => {
+export const removeTodoListAC = (id: string): RemoveTodoListActionType => {
     return {type: 'REMOVE-TODOLIST', id: id}
 }
-export const AddTodoListAC = (title: string): AddTodoListActionType => {
-    return {type: 'ADD-TODOLIST', title: title}
+export const addTodoListAC = (title: string): AddTodoListActionType => {
+    return {type: 'ADD-TODOLIST', todoListID: v1(), title: title}
 }
-export const ChangeTodoListTitleAC = (id: string, title: string): ChangeTodoListTitleActionType => {
+export const changeTodoListTitleAC = (id: string, title: string): ChangeTodoListTitleActionType => {
     return {type: 'CHANGE-TODOLIST-TITLE', id: id, title: title}
 }
-export const ChangeTodoListFilterAC = (id: string, filter: FilterValuesType): ChangeTodoListFilterActionType => {
+export const changeTodoListFilterAC = (id: string, filter: FilterValuesType): ChangeTodoListFilterActionType => {
     return {type: 'CHANGE-TODOLIST-FILTER', id: id, filter: filter}
 }
 
-export const todoListsReducer = (state: todoListsType[], action: ActionTypes): todoListsType[] => {
+export const todoListsReducer = (state: todoListsType[], action: ActionsTypes): todoListsType[] => {
     switch (action.type) {
         case 'REMOVE-TODOLIST': {
             return state.filter(el => el.id !== action.id)
             }
         case 'ADD-TODOLIST': {
             return [...state, {
-                id: v1(),
+                id: action.todoListID,
                 title: action.title,
                 filter: 'all'
             }]
