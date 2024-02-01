@@ -36,7 +36,7 @@ type ActionsTypes =
 export const removeTaskAC = (todolistID: string, taskID: string): RemoveTaskActionType => {
     return {type: 'REMOVE-TASK', todolistID, taskID}
 }
-export const addTaskAC = (todolistID: string, taskTitle: string): AddTaskActionType => {
+export const addTaskAC = (todolistID:  string, taskTitle: string): AddTaskActionType => {
     return {type: 'ADD-TASK', todolistID, taskTitle}
 }
 export const changeTaskStatusAC = (todolistID: string, taskID: string, isDone: boolean): changeTaskStatusActionType => {
@@ -70,6 +70,6 @@ export const tasksReducer = (state: TasksStateType, action: ActionsTypes): Tasks
             return stateCopy
         }
         default:
-            throw new Error("I don't understand this action type")
+            return state
     }
 }

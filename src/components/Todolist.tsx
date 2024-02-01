@@ -1,9 +1,10 @@
-import React, {ChangeEvent, FC} from 'react';
+import React, {FC} from 'react';
 import {FilterValuesType} from "../App";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
-import {Button, Checkbox, IconButton} from "@mui/material";
+import {Button, IconButton} from "@mui/material";
 import {Delete} from "@mui/icons-material";
+import {SuperCheckbox} from "./SuperCheckbox";
 
 
 export type TodoListPropsType = {
@@ -42,20 +43,34 @@ export const Todolist: FC<TodoListPropsType> = (
         removeTodoList
     }) => {
 
+    const onClickAllHandler = () => changeFilter(todoListID, 'all')
+    const onClickActiveHandler = () => changeFilter(todoListID, 'active')
+    const onClickCompletedHandler = () => changeFilter(todoListID, 'completed')
+    const onClickRemoveTodoListHandler = () => {
+        removeTodoList(todoListID)
+    }
+    const changeTodoListTitleHandler = (newTodoListTitle: string) => {
+        changeTodoListTitle(todoListID, newTodoListTitle)
+    }
+    const addItem = (newTaskTitle: string) => {
+        addTask(todoListID, newTaskTitle)
+    }
+    const onChangeStatusHandler = (taskID: string, checked: boolean) => {
+        changeTaskStatus(todoListID, taskID, checked)
+    }
+
     const listItem: JSX.Element = tasks.length === 0 ?
         <div>Please add task</div>
         : <div> {
             tasks.map((t) => {
                 const onRemoveTaskHandler = () => removeTasks(todoListID, t.id)
-                const onChangeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
-                    changeTaskStatus(todoListID, t.id, e.currentTarget.checked)
-                }
                 const onChangeTitleHandler = (newValue: string) => {
                     changeTaskTitle(todoListID, t.id, newValue)
                 }
                 return <div key={t.id}>
-                    <Checkbox
-                        onChange={onChangeStatusHandler}
+
+                    <SuperCheckbox
+                        callback={(checked) => onChangeStatusHandler(t.id, checked)}
                         checked={t.isDone}
                     />
                     <EditableSpan
@@ -69,18 +84,6 @@ export const Todolist: FC<TodoListPropsType> = (
                 </div>
             })}
         </div>
-    const onClickAllHandler = () => changeFilter(todoListID, 'all')
-    const onClickActiveHandler = () => changeFilter(todoListID, 'active')
-    const onClickCompletedHandler = () => changeFilter(todoListID, 'completed')
-    const onClickRemoveTodoListHandler = () => {
-        removeTodoList(todoListID)
-    }
-    const changeTodoListTitleHandler = (newTodoListTitle: string) => {
-        changeTodoListTitle(todoListID, newTodoListTitle)
-    }
-    const addItem = (newTaskTitle: string) => {
-        addTask(todoListID, newTaskTitle)
-    }
 
     return <div>
         <h3>
