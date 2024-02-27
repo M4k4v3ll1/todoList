@@ -1,10 +1,10 @@
-import React, {FC} from 'react';
+import React, {FC, memo, useCallback, useMemo} from 'react';
 import {FilterValuesType} from "../App";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
-import {Button, IconButton} from "@mui/material";
+import {Button, ButtonProps, IconButton} from "@mui/material";
 import {Delete} from "@mui/icons-material";
-import {SuperCheckbox} from "./SuperCheckbox";
+import {Task} from "./Task";
 
 
 export type TodoListPropsType = {
@@ -28,7 +28,7 @@ export type TaskType = {
 }
 
 // В props сразу делаем деструктурирующее присваивание: вместо (props) сразу делаем ({title, tasks}). И в дальнейшем не нужно писать props.title, а сразу title
-export const Todolist: FC<TodoListPropsType> = (
+export const Todolist: FC<TodoListPropsType> = memo((
     {
         todoListID,
         title,
@@ -42,49 +42,49 @@ export const Todolist: FC<TodoListPropsType> = (
         filter,
         removeTodoList
     }) => {
-
-    const onClickAllHandler = () => changeFilter(todoListID, 'all')
-    const onClickActiveHandler = () => changeFilter(todoListID, 'active')
-    const onClickCompletedHandler = () => changeFilter(todoListID, 'completed')
+    console.log('TodoList is called')
+    const onClickAllHandler = useCallback(() => changeFilter(todoListID, 'all'), [changeFilter, todoListID])
+    const onClickActiveHandler = useCallback(() => changeFilter(todoListID, 'active'), [changeFilter, todoListID])
+    const onClickCompletedHandler = useCallback(() => changeFilter(todoListID, 'completed'), [changeFilter, todoListID])
     const onClickRemoveTodoListHandler = () => {
         removeTodoList(todoListID)
     }
-    const changeTodoListTitleHandler = (newTodoListTitle: string) => {
+    const changeTodoListTitleHandler = useCallback((newTodoListTitle: string) => {
         changeTodoListTitle(todoListID, newTodoListTitle)
-    }
-    const addItem = (newTaskTitle: string) => {
+    }, [changeTodoListTitle, todoListID])
+    const addItem = useCallback((newTaskTitle: string) => {
         addTask(todoListID, newTaskTitle)
-    }
-    const onChangeStatusHandler = (taskID: string, checked: boolean) => {
+    }, [addTask, todoListID])
+    const onChangeStatusHandler = useCallback((taskID: string, checked: boolean) => {
         changeTaskStatus(todoListID, taskID, checked)
-    }
+    }, [changeTaskStatus, todoListID])
+    let filteredTasks = tasks
 
-    const listItem: JSX.Element = tasks.length === 0 ?
+    filteredTasks = useMemo(() => {
+        console.log('useMemo')
+        if (filter === 'active') {
+            filteredTasks = filteredTasks.filter(t => !t.isDone)
+        }
+        if (filter === 'completed') {
+            filteredTasks = filteredTasks.filter(t => t.isDone)
+        }
+        return filteredTasks
+    }, [filter, tasks])
+    const listItem: JSX.Element = filteredTasks.length === 0 ?
         <div>Please add task</div>
         : <div> {
-            tasks.map((t) => {
-                const onRemoveTaskHandler = () => removeTasks(todoListID, t.id)
-                const onChangeTitleHandler = (newValue: string) => {
-                    changeTaskTitle(todoListID, t.id, newValue)
-                }
-                return <div key={t.id}>
+            filteredTasks.map((t) => {
+                return <Task
+                    key={t.id}
+                    task={t}
+                    todoListID={todoListID}
+                    removeTasks={removeTasks}
+                    changeTaskStatus={onChangeStatusHandler}
+                    changeTaskTitle={changeTaskTitle}
+                    />
 
-                    <SuperCheckbox
-                        callback={(checked) => onChangeStatusHandler(t.id, checked)}
-                        checked={t.isDone}
-                    />
-                    <EditableSpan
-                        title={t.title}
-                        isDone={t.isDone}
-                        onChange={onChangeTitleHandler}
-                    />
-                    <IconButton onClick={onRemoveTaskHandler}>
-                        <Delete/>
-                    </IconButton>
-                </div>
             })}
         </div>
-
     return <div>
         <h3>
             <EditableSpan
@@ -99,19 +99,27 @@ export const Todolist: FC<TodoListPropsType> = (
         <div>
             <AddItemForm addItem={addItem}/>
             {listItem}
-            <Button
-                variant={filter === 'all' ? 'contained' : 'text'}
-                name={'All'}
-                onClick={onClickAllHandler}>All</Button>
-            <Button
-                variant={filter === 'active' ? 'contained' : 'text'}
-                name={'active'}
-                onClick={onClickActiveHandler}>Active</Button>
-            <Button
-                variant={filter === 'completed' ? 'contained' : 'text'}
-                name={'completed'}
-                onClick={onClickCompletedHandler}>Completed</Button>
+            <MyButton variant={filter === 'all' ? 'contained' : 'text'} name={'all'} onClick={onClickAllHandler}/>
+            <MyButton variant={filter === 'active' ? 'contained' : 'text'} name={'active'} onClick={onClickActiveHandler}/>
+            <MyButton variant={filter === 'completed' ? 'contained' : 'text'} name={'completed'} onClick={onClickCompletedHandler}/>
         </div>
     </div>
+})
+
+interface IMyButton extends ButtonProps {
 }
 
+const MyButton: FC<IMyButton> = memo(({
+                                     variant,
+                                     name,
+                                     onClick
+                                 }) => {
+    return (<Button
+        variant={variant}
+        name={name}
+        onClick={onClick}
+        >
+            {name}
+    </Button>
+    )
+})

@@ -1,11 +1,11 @@
-import React, {ChangeEvent, FC, KeyboardEvent, useState} from "react";
+import React, {ChangeEvent, FC, KeyboardEvent, memo, useState} from "react";
 import {IconButton, TextField} from "@mui/material";
 import {ControlPoint} from "@mui/icons-material";
 
 type AddItemFormPropsType = {
     addItem: (newTaskTitle: string) => void
 }
-export const AddItemForm: FC<AddItemFormPropsType> = (
+export const AddItemForm: FC<AddItemFormPropsType> = memo((
     {
         addItem
     }
@@ -24,7 +24,9 @@ export const AddItemForm: FC<AddItemFormPropsType> = (
         }
     }
     const onKeyPressAddTaskHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        setError(null)
+        if (error) {
+            setError(null)
+        }
         if (e.charCode === 13) {
             addItem(newTaskTitle);
             setNewTaskTitle('');
@@ -46,4 +48,4 @@ export const AddItemForm: FC<AddItemFormPropsType> = (
             <ControlPoint/>
         </IconButton>
     </div>
-}
+})

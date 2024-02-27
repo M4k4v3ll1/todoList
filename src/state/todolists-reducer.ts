@@ -27,15 +27,15 @@ export const todoListID1 = v1()
 export const todoListID2 = v1()
 
 const initialState: TodoListsType[] = [
-    {id: todoListID1, title: 'What to learn', filter: 'all'},
-    {id: todoListID2, title: 'What to buy', filter: 'all'},
+    // {id: todoListID1, title: 'What to learn', filter: 'all'},
+    // {id: todoListID2, title: 'What to buy', filter: 'all'},
 ]
 
 export const todoListsReducer = (state: TodoListsType[] = initialState, action: TodoListsReducerActionsTypes): TodoListsType[] => {
     switch (action.type) {
         case 'REMOVE-TODOLIST': {
             return state.filter(el => el.id !== action.id)
-            }
+        }
         case 'ADD-TODOLIST': {
             return [...state, {
                 id: action.todoListID,

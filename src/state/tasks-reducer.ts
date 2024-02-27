@@ -1,6 +1,6 @@
 import {TasksStateType} from "../App";
 import {v1} from "uuid";
-import {AddTodoListActionType, RemoveTodoListActionType, todoListID1, todoListID2} from "./todolists-reducer";
+import {AddTodoListActionType, RemoveTodoListActionType} from "./todolists-reducer";
 
 export type RemoveTaskActionType = ReturnType<typeof removeTaskAC>
 export type AddTaskActionType = ReturnType<typeof addTaskAC>
@@ -29,18 +29,18 @@ export const changeTaskTitleAC = (todolistID: string, taskID: string, taskTitle:
 }
 
 const initialState: TasksStateType = {
-    [todoListID1]: [
-        {id: v1(), title: "HTML&CSS", isDone: true},
-        {id: v1(), title: "JS", isDone: true},
-        {id: v1(), title: "ReactJS", isDone: false},
-        {id: v1(), title: "Rest API", isDone: false},
-        {id: v1(), title: "GraphQL", isDone: false},
-    ],
-    [todoListID2]: [
-        {id: v1(), title: "Book", isDone: true},
-        {id: v1(), title: "Milk", isDone: true},
-        {id: v1(), title: "Tea", isDone: false},
-    ]
+    // [todoListID1]: [
+    //     {id: v1(), title: "HTML&CSS", isDone: true},
+    //     {id: v1(), title: "JS", isDone: true},
+    //     {id: v1(), title: "ReactJS", isDone: false},
+    //     {id: v1(), title: "Rest API", isDone: false},
+    //     {id: v1(), title: "GraphQL", isDone: false},
+    // ],
+    // [todoListID2]: [
+    //     {id: v1(), title: "Book", isDone: true},
+    //     {id: v1(), title: "Milk", isDone: true},
+    //     {id: v1(), title: "Tea", isDone: false},
+    // ]
 }
 
 export const tasksReducer = (state: TasksStateType = initialState, action: ActionsTypes): TasksStateType => {
