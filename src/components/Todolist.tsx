@@ -106,10 +106,9 @@ export const Todolist: FC<TodoListPropsType> = memo((
     </div>
 })
 
-interface IMyButton extends ButtonProps {
-}
+type MyButtonPropsType = ButtonProps & {}
 
-const MyButton: FC<IMyButton> = memo(({
+const MyButton: FC<MyButtonPropsType> = memo(({
                                      variant,
                                      name,
                                      onClick
