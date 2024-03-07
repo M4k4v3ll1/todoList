@@ -1,28 +1,31 @@
-import React, {ChangeEvent, FC, memo, useState} from "react";
+import {Meta, StoryObj} from "@storybook/react";
+import React, {ChangeEvent, useState} from "react";
 import {TextField} from "@mui/material";
+import {EditableSpan} from "./EditableSpan";
 
-export type EditableSpanPropsType = {
-    title: string
-    isDone?: boolean
-    onChange: (newValue: string) => void
+const meta: Meta<typeof EditableSpan> = {
+    title: 'TODOLISTS/EditableSpan Component',
+    component: EditableSpan,
+    parameters: {
+        layout: 'centered'
+    },
+    tags: ['autodocs'],
+    argTypes: {}
 }
-export const EditableSpan: FC<EditableSpanPropsType> = memo((
-    {
-        title,
-        isDone,
-        onChange
-    }
-) => {
-    console.log('EditableSpan is called')
+export default meta
+type Story = StoryObj<typeof EditableSpan>
+
+export const EditableSpanStory = () => {
     const [editMode, setEditMode] = useState(false)
-    const [inputTitle, setInputTitle] = useState('')
+    const [inputTitle, setInputTitle] = useState('Editable Span')
+    const isDone = true
     const onClickActivateEditMode = () => {
         setEditMode(true)
-        setInputTitle(title)
+        setInputTitle(inputTitle)
     }
     const onClickActivateViewMode = () => {
         setEditMode(false)
-        onChange(inputTitle)
+        setInputTitle(inputTitle)
     }
     const onChangeChangeInputTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setInputTitle(e.currentTarget.value)
@@ -37,6 +40,6 @@ export const EditableSpan: FC<EditableSpanPropsType> = memo((
             : <span
                 className={isDone ? 'is_done' : ''}
                 onDoubleClick={onClickActivateEditMode}
-            >{title}</span>
+            >{inputTitle}</span>
     )
-})
+}

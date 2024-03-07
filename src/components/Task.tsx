@@ -3,13 +3,13 @@ import {SuperCheckbox} from "./SuperCheckbox";
 import {EditableSpan} from "./EditableSpan";
 import {IconButton} from "@mui/material";
 import {Delete} from "@mui/icons-material";
-import {TaskType} from "./Todolist";
+import {TaskStatuses, TaskType} from "../api/todolists-api";
 
 type TaskPropsType = {
     task: TaskType
     todoListID: string
     removeTasks: (todoListID: string, id: string) => void
-    changeTaskStatus: (id: string, isDone: boolean) => void
+    changeTaskStatus: (id: string, status: TaskStatuses) => void
     changeTaskTitle: (todoListID: string, id: string, newValue: string) => void
 }
 
@@ -24,18 +24,18 @@ export const Task: FC<TaskPropsType> = memo(({
     const onChangeTitleHandler = useCallback((newValue: string) => {
         changeTaskTitle(todoListID, task.id, newValue)
     }, [changeTaskTitle, task])
-    const onChangeTaskStatusHandler = useCallback((checked: boolean) => {
-        changeTaskStatus(task.id, checked)
+    const onChangeTaskStatusHandler = useCallback((status: boolean) => {
+        changeTaskStatus(task.id, status ? TaskStatuses.Completed : TaskStatuses.New)
     }, [changeTaskStatus, task])
     return (
         <div>
             <SuperCheckbox
                 callback={onChangeTaskStatusHandler}
-                checked={task.isDone}
+                checked={task.status === TaskStatuses.Completed}
             />
             <EditableSpan
                 title={task.title}
-                isDone={task.isDone}
+                isDone={task.status === TaskStatuses.Completed}
                 onChange={onChangeTitleHandler}
             />
             <IconButton onClick={onRemoveTaskHandler}>

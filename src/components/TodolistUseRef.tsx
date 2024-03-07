@@ -1,6 +1,8 @@
 import React, {FC, useRef} from 'react';
 import {ButtonComponent} from "./button/ButtonComponent";
-import {FilterValuesType} from "../App";
+import {FilterValuesType} from "../state/todolists-reducer";
+import {TaskStatuses} from "../api/todolists-api";
+
 
 export type TodoListPropsType = {
     title: string
@@ -13,7 +15,7 @@ export type TodoListPropsType = {
 export type TaskPropsType = {
     id: string
     title: string
-    isDone: boolean
+    status: TaskStatuses
 }
 
 // В props сразу делаем деструктурирующее присваивание: вместо (props) сразу делаем ({title, tasks}). И в дальнейшем не нужно писать props.title, а сразу title
@@ -48,7 +50,7 @@ export const Todolist: FC<TodoListPropsType> = (
             tasks.map((t) => {
                 const removeTask = () => removeTasks(t.id)
                 return <>
-                    <li><input type="checkbox" checked={t.isDone}/>
+                    <li><input type="checkbox" checked={t.status === TaskStatuses.Completed}/>
                         <span>{t.title}</span>
                         <ButtonComponent name={'x'}
                                          onClick={removeTask}

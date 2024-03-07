@@ -1,10 +1,11 @@
 import React, {FC, memo, useCallback, useMemo} from 'react';
-import {FilterValuesType} from "../App";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
 import {Button, ButtonProps, IconButton} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 import {Task} from "./Task";
+import {TaskStatuses, TaskType} from "../api/todolists-api";
+import {FilterValuesType} from "../state/todolists-reducer";
 
 
 export type TodoListPropsType = {
@@ -14,17 +15,11 @@ export type TodoListPropsType = {
     removeTasks: (todoListID: string, id: string) => void
     changeFilter: (todoListID: string, value: FilterValuesType) => void
     addTask: (todoListID: string, newTaskTitle: string) => void
-    changeTaskStatus: (todoListID: string, id: string, isDone: boolean) => void
+    changeTaskStatus: (todoListID: string, id: string, status: TaskStatuses) => void
     changeTaskTitle: (todoListID: string, id: string, newValue: string) => void
     changeTodoListTitle: (todoListID: string, todoListTitle: string) => void
     filter: FilterValuesType
     removeTodoList: (todoListID: string) => void
-}
-
-export type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
 }
 
 // В props сразу делаем деструктурирующее присваивание: вместо (props) сразу делаем ({title, tasks}). И в дальнейшем не нужно писать props.title, а сразу title
@@ -55,18 +50,18 @@ export const Todolist: FC<TodoListPropsType> = memo((
     const addItem = useCallback((newTaskTitle: string) => {
         addTask(todoListID, newTaskTitle)
     }, [addTask, todoListID])
-    const onChangeStatusHandler = useCallback((taskID: string, checked: boolean) => {
-        changeTaskStatus(todoListID, taskID, checked)
+    const onChangeStatusHandler = useCallback((taskID: string, status: TaskStatuses) => {
+        changeTaskStatus(todoListID, taskID, status)
     }, [changeTaskStatus, todoListID])
     let filteredTasks = tasks
 
     filteredTasks = useMemo(() => {
         console.log('useMemo')
         if (filter === 'active') {
-            filteredTasks = filteredTasks.filter(t => !t.isDone)
+            filteredTasks = filteredTasks.filter(t => t.status === TaskStatuses.New)
         }
         if (filter === 'completed') {
-            filteredTasks = filteredTasks.filter(t => t.isDone)
+            filteredTasks = filteredTasks.filter(t => t.status === TaskStatuses.Completed)
         }
         return filteredTasks
     }, [filter, tasks])

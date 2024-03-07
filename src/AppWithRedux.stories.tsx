@@ -4,9 +4,10 @@ import {ReduxStoreProviderDecorator} from "./stories/ReduxStoreProviderDecorator
 
 
 export default {
-    title: 'AppWithRedux Component',
+    title: 'TODOLISTS/AppWithRedux Component',
     component: AppWithRedux,
-    decorators: [ReduxStoreProviderDecorator]
+    decorators: [ReduxStoreProviderDecorator],
+    tags: ['autodocs']
 }
 
 const changeCallback = action('Value changed')

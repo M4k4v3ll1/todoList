@@ -2,7 +2,7 @@ import React, {ChangeEvent, FC, KeyboardEvent, memo, useState} from "react";
 import {IconButton, TextField} from "@mui/material";
 import {ControlPoint} from "@mui/icons-material";
 
-type AddItemFormPropsType = {
+export type AddItemFormPropsType = {
     addItem: (newTaskTitle: string) => void
 }
 export const AddItemForm: FC<AddItemFormPropsType> = memo((
@@ -24,12 +24,15 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo((
         }
     }
     const onKeyPressAddTaskHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+        debugger
         if (error) {
             setError(null)
         }
-        if (e.charCode === 13) {
+        if (e.charCode === 13 && newTaskTitle.trim() !== '') {
             addItem(newTaskTitle);
             setNewTaskTitle('');
+        } else if (e.charCode === 13 && newTaskTitle.trim() === '') {
+            setError('Title is required')
         }
     }
     return <div>

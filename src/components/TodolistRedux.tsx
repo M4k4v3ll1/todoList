@@ -1,15 +1,20 @@
 import React, {FC} from 'react';
-import {FilterValuesType} from "../App";
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
 import {Button, IconButton} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 import {SuperCheckbox} from "./SuperCheckbox";
 import {useDispatch, useSelector} from "react-redux";
-import {changeTodoListFilterAC, changeTodoListTitleAC, removeTodoListAC} from "../state/todolists-reducer";
+import {
+    changeTodoListFilterAC,
+    changeTodoListTitleAC,
+    FilterValuesType,
+    removeTodoListAC
+} from "../state/todolists-reducer";
 import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from "../state/tasks-reducer";
 import {AppRootState} from "../state/store";
-import {TasksStateType} from "../AppWithRedux";
+import {TaskStatuses} from "../api/todolists-api";
+import {TasksStateType} from "../App";
 
 
 export type TodoListPropsType = {
@@ -19,7 +24,7 @@ export type TodoListPropsType = {
     // removeTasks: (todoListID: string, id: string) => void
     // changeFilter: (todoListID: string, value: FilterValuesType) => void
     // addTask: (todoListID: string, newTaskTitle: string) => void
-    // changeTaskStatus: (todoListID: string, id: string, isDone: boolean) => void
+    // changeTaskStatus: (todoListID: string, id: string, status: TaskStatuses) => void
     // changeTaskTitle: (todoListID: string, id: string, newValue: string) => void
     // changeTodoListTitle: (todoListID: string, todoListTitle: string) => void
     filter: FilterValuesType
@@ -29,7 +34,7 @@ export type TodoListPropsType = {
 export type TaskType = {
     id: string
     title: string
-    isDone: boolean
+    status: TaskStatuses
 }
 
 // В props сразу делаем деструктурирующее присваивание: вместо (props) сразу делаем ({title, tasks}). И в дальнейшем не нужно писать props.title, а сразу title
@@ -43,10 +48,10 @@ export const TodolistRedux: FC<TodoListPropsType> = (
     let tasks = useSelector<AppRootState, TasksStateType>(state => state.tasks)
     let tasksForTodoList = tasks[todoListID]
     if (filter === 'completed') {
-        tasksForTodoList = tasks[todoListID].filter(t => t.isDone)
+        tasksForTodoList = tasks[todoListID].filter(t => t.status === TaskStatuses.Completed)
     }
     if (filter === 'active') {
-        tasksForTodoList = tasks[todoListID].filter(t => !t.isDone)
+        tasksForTodoList = tasks[todoListID].filter(t => t.status === TaskStatuses.New)
     }
 
     const onClickAllHandler = () => dispatch(changeTodoListFilterAC(todoListID, 'all'))
@@ -61,8 +66,8 @@ export const TodolistRedux: FC<TodoListPropsType> = (
     const addItem = (newTaskTitle: string) => {
         dispatch(addTaskAC(todoListID, newTaskTitle))
     }
-    const onChangeStatusHandler = (taskID: string, checked: boolean) => {
-        dispatch(changeTaskStatusAC(todoListID, taskID, checked))
+    const onChangeStatusHandler = (taskID: string, status: TaskStatuses) => {
+        dispatch(changeTaskStatusAC(todoListID, taskID, status))
     }
 
     const listItem: JSX.Element = tasksForTodoList.length === 0 ?
@@ -76,12 +81,12 @@ export const TodolistRedux: FC<TodoListPropsType> = (
                 return <div key={t.id}>
 
                     <SuperCheckbox
-                        callback={(checked) => onChangeStatusHandler(t.id, checked)}
-                        checked={t.isDone}
+                        callback={() => onChangeStatusHandler(t.id, status ? TaskStatuses.Completed : TaskStatuses.New)}
+                        checked={t.status === TaskStatuses.Completed}
                     />
                     <EditableSpan
                         title={t.title}
-                        isDone={t.isDone}
+                        isDone={t.status === TaskStatuses.Completed}
                         onChange={onChangeTitleHandler}
                     />
                     <IconButton onClick={onRemoveTaskHandler}>
