@@ -1,4 +1,4 @@
-import React, {FC, memo, useCallback, useMemo} from 'react';
+import React, {FC, memo, useCallback, useEffect, useMemo} from 'react';
 import {AddItemForm} from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
 import {Button, ButtonProps, IconButton} from "@mui/material";
@@ -6,6 +6,8 @@ import {Delete} from "@mui/icons-material";
 import {Task} from "./Task";
 import {TaskStatuses, TaskType} from "../api/todolists-api";
 import {FilterValuesType} from "../state/todolists-reducer";
+import {useAppDispatch} from "../state/store";
+import {getTasksTC} from "../state/tasks-reducer";
 
 
 export type TodoListPropsType = {
@@ -37,7 +39,10 @@ export const Todolist: FC<TodoListPropsType> = memo((
         filter,
         removeTodoList
     }) => {
-    console.log('TodoList is called')
+    const dispatch = useAppDispatch()
+    useEffect(() => {
+        dispatch(getTasksTC(todoListID))
+    }, [])
     const onClickAllHandler = useCallback(() => changeFilter(todoListID, 'all'), [changeFilter, todoListID])
     const onClickActiveHandler = useCallback(() => changeFilter(todoListID, 'active'), [changeFilter, todoListID])
     const onClickCompletedHandler = useCallback(() => changeFilter(todoListID, 'completed'), [changeFilter, todoListID])

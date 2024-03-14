@@ -18,8 +18,8 @@ function App() {
     const todoListID2 = v1()
 
     let [todoLists, setTodoLists] = useState<TodoListDomainType[]>([
-        {todoListID: todoListID1, title: 'What to learn', filter: 'all', addedData: new Date(), order: 0},
-        {todoListID: todoListID2, title: 'What to buy', filter: 'all', addedData: new Date(), order: 0}
+        {id: todoListID1, title: 'What to learn', filter: 'all', addedData: new Date(), order: 0},
+        {id: todoListID2, title: 'What to buy', filter: 'all', addedData: new Date(), order: 0}
     ])
 
     let [tasks, setTasks] = useState<TasksStateType>({
@@ -51,18 +51,18 @@ function App() {
     }
 
     function changeFilter(todoListID: string, value: FilterValuesType) {
-        setTodoLists(todoLists.map(el => el.todoListID === todoListID ? {...el, filter: value} : el))
+        setTodoLists(todoLists.map(el => el.id === todoListID ? {...el, filter: value} : el))
     }
 
     function removeTodoList(todoListID: string) {
-        setTodoLists(todoLists.filter(el => el.todoListID !== todoListID))
+        setTodoLists(todoLists.filter(el => el.id !== todoListID))
         delete tasks[todoListID]
     }
 
     function addTodoList(todoListTitle: string) {
-        let newTodoList: TodoListDomainType = {todoListID: v1(), title: todoListTitle, filter: 'all', addedData: new Date(), order: 0}
+        let newTodoList: TodoListDomainType = {id: v1(), title: todoListTitle, filter: 'all', addedData: new Date(), order: 0}
         setTodoLists([newTodoList, ...todoLists])
-        setTasks({...tasks, [newTodoList.todoListID]: []})
+        setTasks({...tasks, [newTodoList.id]: []})
     }
 
     function changeTaskTitle(todoListID: string, id: string, newValue: string) {
@@ -77,7 +77,7 @@ function App() {
     }
 
     function changeTodoListTitle(todoListID: string, newTodoListTitle: string) {
-        setTodoLists(todoLists.map(el => el.todoListID === todoListID ? {...el, title: newTodoListTitle} : el))
+        setTodoLists(todoLists.map(el => el.id === todoListID ? {...el, title: newTodoListTitle} : el))
     }
 
     //UI
@@ -100,18 +100,18 @@ function App() {
                 </Grid>
                 <Grid container spacing={3}>
                     {todoLists.map(el => {
-                        let tasksForTodoList = tasks[el.todoListID]
+                        let tasksForTodoList = tasks[el.id]
                         if (el.filter === 'completed') {
-                            tasksForTodoList = tasks[el.todoListID].filter(t => t.status === TaskStatuses.Completed)
+                            tasksForTodoList = tasks[el.id].filter(t => t.status === TaskStatuses.Completed)
                         }
                         if (el.filter === 'active') {
-                            tasksForTodoList = tasks[el.todoListID].filter(t => t.status === TaskStatuses.New)
+                            tasksForTodoList = tasks[el.id].filter(t => t.status === TaskStatuses.New)
                         }
                         return (<Grid item>
                             <Paper style={ {padding: '10px'}}>
                                 <Todolist
-                                    key={el.todoListID}
-                                    todoListID={el.todoListID}
+                                    key={el.id}
+                                    todoListID={el.id}
                                     title={el.title}
                                     tasks={tasksForTodoList}
                                     removeTasks={removeTasks}

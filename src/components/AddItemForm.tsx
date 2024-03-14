@@ -24,7 +24,6 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo((
         }
     }
     const onKeyPressAddTaskHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        debugger
         if (error) {
             setError(null)
         }

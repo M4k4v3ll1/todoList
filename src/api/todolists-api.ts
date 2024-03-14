@@ -10,7 +10,7 @@ export const instance = axios.create({
 })
 
 export type TodoListType = {
-    todoListID: string
+    id: string
     title: string
     addedData: Date
     order: number
@@ -46,11 +46,11 @@ export type TaskType = {
     addedDate: Date
 }
 
-type UpdateTaskModelType = {
+export type UpdateTaskModelType = {
     description: string
     title: string
-    status: number
-    priority: number
+    status: TaskStatuses
+    priority: TaskPriorities
     startDate: Date
     deadline: Date
     order: number
