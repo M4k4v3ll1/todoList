@@ -4,10 +4,12 @@ import {ControlPoint} from "@mui/icons-material";
 
 export type AddItemFormPropsType = {
     addItem: (newTaskTitle: string) => void
+    disabled?: boolean
 }
 export const AddItemForm: FC<AddItemFormPropsType> = memo((
     {
-        addItem
+        addItem,
+        disabled = false
     }
 ) => {
     const [newTaskTitle, setNewTaskTitle] = useState('')
@@ -43,9 +45,11 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo((
             label={'Add text'}
             onChange={onChangeNewTitleHandler}
             onKeyPress={onKeyPressAddTaskHandler}
+            disabled={disabled}
         />
         <IconButton
             onClick={onClickAddTaskHandler}
+            disabled={disabled}
         >
             <ControlPoint/>
         </IconButton>

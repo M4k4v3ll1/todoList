@@ -26,7 +26,7 @@ type Story = StoryObj<typeof AddItemForm>
 
 export const AddItemFormStory: FC<AddItemFormPropsType> = memo((
     {
-        addItem
+        addItem, disabled
     }
 ) => {
     const [newTaskTitle, setNewTaskTitle] = useState('')
@@ -60,9 +60,11 @@ export const AddItemFormStory: FC<AddItemFormPropsType> = memo((
             label={'Add text'}
             onChange={onChangeNewTitleHandler}
             onKeyPress={onKeyPressAddTaskHandler}
+            disabled={disabled}
         />
         <IconButton
             onClick={onClickAddTaskHandler}
+            disabled={disabled}
         >
             <ControlPoint/>
         </IconButton>
@@ -71,4 +73,10 @@ export const AddItemFormStory: FC<AddItemFormPropsType> = memo((
 
 export const AddItemFormWithErrorStory: Story = {
     render: () => <AddItemFormStory addItem={action('Button clicked inside form')}/>
+}
+export const AddItemFormDisabledExample: Story = {
+    render: () => <AddItemFormStory
+        addItem={action('Button clicked inside form')}
+        disabled={true}
+    />
 }

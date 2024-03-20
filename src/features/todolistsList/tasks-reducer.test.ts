@@ -74,7 +74,7 @@ test('correct task title in correct todoList should be changed', () => {
 });
 
 test('new property with empty task array should be added when new todolist was added', () => {
-    const newTodoList: TodoListDomainType = {id: '123', title: '', filter: 'all', addedData: new Date(), order: 0}
+    const newTodoList: TodoListDomainType = {id: '123', title: '', filter: 'all', entityStatus: "idle", addedData: new Date(), order: 0}
     const endState = tasksReducer(startState, addTodoListAC(newTodoList, 'title no matter'))
 
     const keys = Object.keys(endState);

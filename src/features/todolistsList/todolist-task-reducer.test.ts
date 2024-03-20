@@ -4,7 +4,7 @@ import {addTodoListAC, TodoListDomainType, todoListsReducer} from "./todolists-r
 test('IDs of tasks and todolists should be equal', () => {
     const startTaskState: TasksStateType = {}
     const startTodolistsState:TodoListDomainType[] = []
-    const newTodoList: TodoListDomainType = {id: '123', title: '', filter: 'all', addedData: new Date(), order: 0}
+    const newTodoList: TodoListDomainType = {id: '123', title: '', filter: 'all', entityStatus: "idle", addedData: new Date(), order: 0}
     const action = addTodoListAC(newTodoList, 'newTodolist')
     const endTaskState = tasksReducer(startTaskState, action)
     const endTodolistsState = todoListsReducer(startTodolistsState, action)

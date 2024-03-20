@@ -14,6 +14,6 @@ const changeCallback = action('Value changed')
 
 export const AppExample = () => {
     return (
-        <App/>
+        <App demoMode={true}/>
     )
 }
