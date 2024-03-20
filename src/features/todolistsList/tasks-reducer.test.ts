@@ -1,11 +1,9 @@
-import {TasksStateType} from "../App";
 import {
     addTaskAC,
     updateTaskAC,
-    changeTaskTitleAC,
     removeTaskAC,
     setTasksAC,
-    tasksReducer
+    tasksReducer, TasksStateType
 } from "./tasks-reducer";
 import {
     addTodoListAC,
@@ -15,7 +13,7 @@ import {
     todoListID1,
     todoListID2
 } from "./todolists-reducer";
-import {TaskPriorities, TaskStatuses} from "../api/todolists-api";
+import {TaskPriorities, TaskStatuses} from "../../api/todolists-api";
 
 let startState: TasksStateType
 
@@ -67,7 +65,7 @@ test('correct task should change its status', () => {
 });
 
 test('correct task title in correct todoList should be changed', () => {
-    const endState = tasksReducer(startState, changeTaskTitleAC(todoListID1, '3', 'ReactTS'))
+    const endState = tasksReducer(startState, updateTaskAC(todoListID1, '3', {title: 'ReactTS'}))
 
     expect(endState[todoListID1].length).toBe(5);
     expect(endState[todoListID2].length).toBe(3);
