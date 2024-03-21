@@ -1,8 +1,10 @@
 import React, {FC, memo, useCallback, useEffect, useMemo} from 'react';
 import {AddItemForm} from "../../../components/addItemForm/AddItemForm";
 import {EditableSpan} from "../../../components/editableSpan/EditableSpan";
-import {Button, ButtonProps, IconButton} from "@mui/material";
-import {Delete} from "@mui/icons-material";
+import Button from "@mui/material/Button";
+import {ButtonProps} from "@mui/material/";
+import IconButton from "@mui/material/IconButton";
+import Delete from "@mui/icons-material/Delete";
 import {Task} from "./task/Task";
 import {TaskStatuses, TaskType} from "../../../api/todolists-api";
 import {FilterValuesType, TodoListDomainType} from "../todolists-reducer";
@@ -93,13 +95,18 @@ export const Todolist: FC<TodoListPropsType> = memo((
                 title={todoList.title}
                 onChange={changeTodoListTitleHandler}
             />
-            <IconButton onClick={onClickRemoveTodoListHandler} disabled={todoList.entityStatus === 'loading'}>
+            <IconButton
+                onClick={onClickRemoveTodoListHandler}
+                disabled={todoList.entityStatus === 'loading'}
+            >
                 <Delete/>
             </IconButton>
         </h3>
-
         <div>
-            <AddItemForm addItem={addItem} disabled={todoList.entityStatus === 'loading'}/>
+            <AddItemForm
+                addItem={addItem}
+                disabled={todoList.entityStatus === 'loading'}
+            />
             {listItem}
             <MyButton variant={todoList.filter === 'all' ? 'contained' : 'text'} name={'all'} onClick={onClickAllHandler}/>
             <MyButton variant={todoList.filter === 'active' ? 'contained' : 'text'} name={'active'}

@@ -1,6 +1,7 @@
 import React, {ChangeEvent, FC, KeyboardEvent, memo, useState} from "react";
-import {IconButton, TextField} from "@mui/material";
-import {ControlPoint} from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import ControlPoint from "@mui/icons-material/ControlPoint";
 
 export type AddItemFormPropsType = {
     addItem: (newTaskTitle: string) => void

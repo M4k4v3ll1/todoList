@@ -1,5 +1,5 @@
 import React, {ChangeEvent} from 'react';
-import {Checkbox} from "@mui/material";
+import Checkbox from "@mui/material/Checkbox";
 
 type SuperCheckboxPropsType = {
     callback: (isDone: boolean) => void

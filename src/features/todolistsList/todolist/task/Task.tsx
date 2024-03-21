@@ -1,8 +1,8 @@
 import React, {FC, memo, useCallback} from 'react';
 import {SuperCheckbox} from "../../../../components/superCheckbox/SuperCheckbox";
 import {EditableSpan} from "../../../../components/editableSpan/EditableSpan";
-import {IconButton} from "@mui/material";
-import {Delete} from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
+import Delete from "@mui/icons-material/Delete";
 import {TaskStatuses, TaskType} from "../../../../api/todolists-api";
 
 type TaskPropsType = {

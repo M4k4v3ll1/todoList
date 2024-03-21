@@ -1,37 +1,48 @@
 import React from 'react';
 import './App.css';
-import {AppBar, Button, Container, IconButton, LinearProgress, Toolbar, Typography} from "@mui/material";
-import {Menu} from "@mui/icons-material";
+import Menu from "@mui/icons-material/Menu";
 import {TodoListsList} from "../features/todolistsList/TodoListsList";
 import IntegrationNotistack from "../components/errorSnackbar/ErrorSnackbar";
-import {AppRootState} from "./store";
 import {RequestStatusType} from "./app-reducer";
-import {useSelector} from "react-redux";
+import AppBar from "@mui/material/AppBar"
+import Button from "@mui/material/Button"
+import Container from "@mui/material/Container"
+import IconButton from "@mui/material/IconButton"
+import LinearProgress from "@mui/material/LinearProgress"
+import Toolbar from "@mui/material/Toolbar"
+import Typography from "@mui/material/Typography"
+import {useAppSelector} from "./store";
+import {BrowserRouter, Route} from "react-router-dom";
+import {Login} from "../features/login/Login";
 
 type AppPropsType = {
     demoMode?: boolean
 }
+
 function App({demoMode = false}: AppPropsType) {
-    const status = useSelector<AppRootState, RequestStatusType>(state => state.app.status)
+    const status = useAppSelector<RequestStatusType>(state => state.app.status)
     return (
-        <div className="App">
-            <IntegrationNotistack/>
-            <AppBar position={'static'}>
-                <Toolbar>
-                    <IconButton edge={'start'} color='inherit' aria-label='menu'>
-                        <Menu/>
-                    </IconButton>
-                    <Typography variant='h6'>
-                        News
-                    </Typography>
-                    <Button color='inherit'>Login</Button>
-                </Toolbar>
+        <BrowserRouter>
+            <div className="App">
+                <IntegrationNotistack/>
+                <AppBar position={'static'}>
+                    <Toolbar>
+                        <IconButton edge={'start'} color='inherit' aria-label='menu'>
+                            <Menu/>
+                        </IconButton>
+                        <Typography variant='h6'>
+                            News
+                        </Typography>
+                        <Button color='inherit'>Login</Button>
+                    </Toolbar>
+                </AppBar>
                 {status === "loading" && <LinearProgress/>}
-            </AppBar>
-            <Container fixed>
-                <TodoListsList demoMode={demoMode}/>
-            </Container>
-        </div>
+                <Container fixed>
+                    <Route path={'/'} element={<TodoListsList/>}></Route>
+                    <Route path={'/login'} element={<Login/>}></Route>
+                </Container>
+            </div>
+        </BrowserRouter>
     );
 }
 

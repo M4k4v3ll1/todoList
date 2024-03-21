@@ -90,3 +90,8 @@ type GetTasksResponseType = {
     totalCount: number
     error: string
 }
+export enum RESULT_CODE {
+    'SUCCEEDED' = 0,
+    'ERROR' = 1,
+    'CAPTCHA_ERROR' = 10
+}
