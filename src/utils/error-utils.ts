@@ -15,6 +15,6 @@ export const handleServerNetworkError = (err: ErrorType, dispatch: Dispatch<AppR
     dispatch(setAppStatusAC("failed"))
 }
 
-type ErrorType = {
+export type ErrorType = {
     message: string
 }

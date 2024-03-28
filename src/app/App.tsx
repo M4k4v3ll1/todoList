@@ -1,9 +1,9 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import Menu from "@mui/icons-material/Menu";
 import {TodoListsList} from "../features/todolistsList/TodoListsList";
 import IntegrationNotistack from "../components/errorSnackbar/ErrorSnackbar";
-import {RequestStatusType} from "./app-reducer";
+import {RequestStatusType, setIsInitializedTC} from "./app-reducer";
 import AppBar from "@mui/material/AppBar"
 import Button from "@mui/material/Button"
 import Container from "@mui/material/Container"
@@ -11,9 +11,11 @@ import IconButton from "@mui/material/IconButton"
 import LinearProgress from "@mui/material/LinearProgress"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
-import {useAppSelector} from "./store";
-import {BrowserRouter, Route} from "react-router-dom";
+import {useAppDispatch, useAppSelector} from "./store";
+import {Navigate, Route, Routes} from "react-router-dom";
 import {Login} from "../features/login/Login";
+import {logoutTC} from "../features/login/auth-reducer";
+import CircularProgress from "@mui/material/CircularProgress";
 
 type AppPropsType = {
     demoMode?: boolean
@@ -21,8 +23,26 @@ type AppPropsType = {
 
 function App({demoMode = false}: AppPropsType) {
     const status = useAppSelector<RequestStatusType>(state => state.app.status)
+    const isInitialized = useAppSelector<boolean>(state => state.app.isInitialized)
+    const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
+    const dispatch = useAppDispatch()
+    const logOutHandler = useCallback(() => {
+        dispatch(logoutTC())
+    }, [])
+
+    useEffect(() => {
+        dispatch(setIsInitializedTC())
+    }, [])
+
+    if (!isInitialized) {
+        return (
+            <div style={{ position: 'fixed', top: '30%', textAlign: 'center', width: '100%' }}>
+                <CircularProgress />
+            </div>
+        )
+    }
+
     return (
-        <BrowserRouter>
             <div className="App">
                 <IntegrationNotistack/>
                 <AppBar position={'static'}>
@@ -33,16 +53,19 @@ function App({demoMode = false}: AppPropsType) {
                         <Typography variant='h6'>
                             News
                         </Typography>
-                        <Button color='inherit'>Login</Button>
+                        {isLoggedIn && <Button color='inherit' onClick={logOutHandler}>Log out</Button>}
                     </Toolbar>
                 </AppBar>
                 {status === "loading" && <LinearProgress/>}
                 <Container fixed>
-                    <Route path={'/'} element={<TodoListsList/>}></Route>
-                    <Route path={'/login'} element={<Login/>}></Route>
+                    <Routes>
+                        <Route path={'/'} element={<TodoListsList/>}></Route>
+                        <Route path={'/login'} element={<Login/>}></Route>
+                        <Route path={'/404'} element={<h1 style={{textAlign: 'center'}}>404: PAGE NOT FOUND</h1>}></Route>
+                        <Route path={'*'} element={<Navigate to={'/404'}/>}></Route>
+                    </Routes>
                 </Container>
             </div>
-        </BrowserRouter>
     );
 }
 

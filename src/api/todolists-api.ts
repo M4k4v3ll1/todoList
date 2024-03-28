@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
+import {LoginType} from "../features/login/Login";
 
 const config = {
     withCredentials: true
@@ -6,11 +7,25 @@ const config = {
 
 // constants
 export const instance = axios.create({
-    baseURL: 'https://social-network.samuraijs.com/api/1.1/',
+    baseURL: 'https://social-network.samuraijs.com/api/1.1',
     ...config
 })
 
-// api
+// auth-api
+export const authAPI = {
+    me() {
+        return instance.get<ResponseType<{ id: number, email: string, login: string }>, AxiosResponse<ResponseType>>('/auth/me')
+    },
+    login(data: LoginType) {
+        return instance.post<ResponseType<{ userId: number }>,
+            AxiosResponse<ResponseType<{ userId: number }>>,
+            LoginType>('/auth/login', data)
+    },
+    logout() {
+        return instance.delete<ResponseType, AxiosResponse<ResponseType>>('/auth/login')
+    }
+}
+// todoList-api
 export const todoListsAPI = {
     getTodoLists() {
         return instance.get<TodoListType[]>('todo-lists')
@@ -50,12 +65,14 @@ export type ResponseType<D = {}> = {
     messages: string[]
     data: D
 }
+
 export enum TaskStatuses {
     New = 0,
     InProgress = 1,
     Completed = 2,
     Draft = 3
 }
+
 export enum TaskPriorities {
     Low = 0,
     Middle = 1,
@@ -63,6 +80,7 @@ export enum TaskPriorities {
     Urgently = 3,
     Later = 4
 }
+
 export type TaskType = {
     description: string
     title: string
@@ -90,6 +108,7 @@ type GetTasksResponseType = {
     totalCount: number
     error: string
 }
+
 export enum RESULT_CODE {
     'SUCCEEDED' = 0,
     'ERROR' = 1,

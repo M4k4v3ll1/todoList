@@ -4,11 +4,13 @@ import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import { todoListsReducer } from "../features/todolistsList/todolists-reducer";
 import {tasksReducer} from "../features/todolistsList/tasks-reducer";
 import {appReducer} from "./app-reducer";
+import {authReducer} from "../features/login/auth-reducer";
 
 const rootReducer = combineReducers({
     todoLists: todoListsReducer,
     tasks: tasksReducer,
-    app: appReducer
+    app: appReducer,
+    auth: authReducer
 })
 
 export type AppRootState = ReturnType<typeof rootReducer>
