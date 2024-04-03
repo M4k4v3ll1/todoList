@@ -1,22 +1,14 @@
-import React, {ChangeEvent} from 'react';
-import Checkbox from "@mui/material/Checkbox";
+import React, { ChangeEvent } from "react"
+import Checkbox from "@mui/material/Checkbox"
 
 type SuperCheckboxPropsType = {
-    callback: (isDone: boolean) => void
-    checked: boolean
+  callback: (isDone: boolean) => void
+  checked: boolean
 }
 
-export const SuperCheckbox: React.FC<SuperCheckboxPropsType> = ({
-                                                                    callback,
-                                                                    checked
-                                                                }) => {
-    const onSuperCheckboxClick = (e: ChangeEvent<HTMLInputElement>) => {
-        callback(e.currentTarget.checked)
-    }
-    return (
-        <Checkbox
-            onChange={onSuperCheckboxClick}
-            checked={checked}
-        />
-    );
-};
+export const SuperCheckbox: React.FC<SuperCheckboxPropsType> = ({ callback, checked }) => {
+  const onSuperCheckboxClick = (e: ChangeEvent<HTMLInputElement>) => {
+    callback(e.currentTarget.checked)
+  }
+  return <Checkbox onChange={onSuperCheckboxClick} checked={checked} />
+}

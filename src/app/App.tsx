@@ -1,72 +1,107 @@
-import React, {useCallback, useEffect} from 'react';
-import './App.css';
-import Menu from "@mui/icons-material/Menu";
-import {TodoListsList} from "../features/todolistsList/TodoListsList";
-import IntegrationNotistack from "../components/errorSnackbar/ErrorSnackbar";
-import {RequestStatusType, setIsInitializedTC} from "./app-reducer";
+import React, { useCallback, useEffect, useState } from "react"
+import "./App.css"
+import Menu from "@mui/icons-material/Menu"
+import { TodoListsList } from "features/todolistsList/TodoListsList"
+import IntegrationNotistack from "../components/errorSnackbar/ErrorSnackbar"
+import { RequestStatusType, setIsInitializedTC } from "app/appSlice"
 import AppBar from "@mui/material/AppBar"
-import Button from "@mui/material/Button"
 import Container from "@mui/material/Container"
 import IconButton from "@mui/material/IconButton"
 import LinearProgress from "@mui/material/LinearProgress"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
-import {useAppDispatch, useAppSelector} from "./store";
-import {Navigate, Route, Routes} from "react-router-dom";
-import {Login} from "../features/login/Login";
-import {logoutTC} from "../features/login/auth-reducer";
-import CircularProgress from "@mui/material/CircularProgress";
+import { useAppSelector } from "./store"
+import { Navigate, Route, Routes } from "react-router-dom"
+import { Login } from "features/login/Login"
+import { logoutTC } from "features/login/authSlice"
+import CircularProgress from "@mui/material/CircularProgress"
+import { useDispatch } from "react-redux"
+import { MenuButton } from "components/menuButton/MenuButton"
+import { createTheme, ThemeProvider } from "@mui/material/styles"
+import Switch from "@mui/material/Switch"
+import CssBaseline from "@mui/material/CssBaseline"
 
 type AppPropsType = {
-    demoMode?: boolean
+  demoMode?: boolean
 }
+type ThemeMode = "dark" | "light"
 
-function App({demoMode = false}: AppPropsType) {
-    const status = useAppSelector<RequestStatusType>(state => state.app.status)
-    const isInitialized = useAppSelector<boolean>(state => state.app.isInitialized)
-    const isLoggedIn = useAppSelector<boolean>(state => state.auth.isLoggedIn)
-    const dispatch = useAppDispatch()
-    const logOutHandler = useCallback(() => {
-        dispatch(logoutTC())
-    }, [])
+function App({ demoMode = false }: AppPropsType) {
+  const status = useAppSelector<RequestStatusType>((state) => state.app.status)
+  const isInitialized = useAppSelector<boolean>((state) => state.app.isInitialized)
+  const isLoggedIn = useAppSelector<boolean>((state) => state.auth.isLoggedIn)
+  const dispatch = useDispatch<any>()
+  const logOutHandler = useCallback(() => {
+    dispatch(logoutTC())
+  }, [])
+  const [themeMode, setThemeMode] = useState<ThemeMode>("light")
+  useEffect(() => {
+    dispatch(setIsInitializedTC())
+  }, [])
 
-    useEffect(() => {
-        dispatch(setIsInitializedTC())
-    }, [])
-
-    if (!isInitialized) {
-        return (
-            <div style={{ position: 'fixed', top: '30%', textAlign: 'center', width: '100%' }}>
-                <CircularProgress />
-            </div>
-        )
-    }
-
+  if (!isInitialized) {
     return (
-            <div className="App">
-                <IntegrationNotistack/>
-                <AppBar position={'static'}>
-                    <Toolbar>
-                        <IconButton edge={'start'} color='inherit' aria-label='menu'>
-                            <Menu/>
-                        </IconButton>
-                        <Typography variant='h6'>
-                            News
-                        </Typography>
-                        {isLoggedIn && <Button color='inherit' onClick={logOutHandler}>Log out</Button>}
-                    </Toolbar>
-                </AppBar>
-                {status === "loading" && <LinearProgress/>}
-                <Container fixed>
-                    <Routes>
-                        <Route path={'/'} element={<TodoListsList/>}></Route>
-                        <Route path={'/login'} element={<Login/>}></Route>
-                        <Route path={'/404'} element={<h1 style={{textAlign: 'center'}}>404: PAGE NOT FOUND</h1>}></Route>
-                        <Route path={'*'} element={<Navigate to={'/404'}/>}></Route>
-                    </Routes>
-                </Container>
-            </div>
-    );
+      <div
+        style={{
+          position: "fixed",
+          top: "30%",
+          textAlign: "center",
+          width: "100%",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    )
+  }
+
+  //Theme settings
+  const theme = createTheme({
+    palette: {
+      mode: themeMode === "light" ? "light" : "dark",
+      primary: {
+        main: "#425E91",
+      },
+    },
+  })
+  const changeModeHandler = () => {
+    setThemeMode(themeMode == "light" ? "dark" : "light")
+  }
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <div className="App">
+        <IntegrationNotistack />
+        <AppBar position={"static"} sx={{ mb: "30px" }}>
+          <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+            <IconButton edge={"start"} color="inherit" aria-label="menu">
+              <Menu />
+            </IconButton>
+            <Typography variant="h6">TodoList</Typography>
+            {isLoggedIn && (
+              <div>
+                <MenuButton>Login</MenuButton>
+                <MenuButton onClick={logOutHandler}>Logout</MenuButton>
+                <MenuButton background={theme.palette.primary.dark}>Faq</MenuButton>
+                <Switch color={"default"} onChange={changeModeHandler} />
+              </div>
+            )}
+          </Toolbar>
+        </AppBar>
+        {status === "loading" && <LinearProgress />}
+        <Container fixed>
+          <Routes>
+            <Route path={"/"} element={<TodoListsList />}></Route>
+            <Route path={"/login"} element={<Login />}></Route>
+            <Route path={"/404"} element={<h1 style={{ textAlign: "center" }}>404: PAGE NOT FOUND</h1>}></Route>
+            <Route path={"*"} element={<Navigate to={"/404"} />}></Route>
+          </Routes>
+        </Container>
+      </div>
+    </ThemeProvider>
+  )
 }
 
-export default App;
+export default App
+
+//React style guide: https://code-style.it-incubator.io/react
