@@ -5,9 +5,9 @@ import { tasksReducer } from "features/todolistsList/tasksSlice"
 import { todoListsReducer } from "features/todolistsList/todolistsSlice"
 import { v1 } from "uuid"
 import { AppRootState } from "../app/store"
-import { TaskPriorities, TaskStatuses } from "../api/todolists-api"
 import { thunk } from "redux-thunk"
 import { appReducer } from "app/appSlice"
+import { TaskPriorities, TaskStatuses } from "common/enums"
 
 const rootReducer = combineReducers({
   tasks: tasksReducer,

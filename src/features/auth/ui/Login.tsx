@@ -7,25 +7,21 @@ import FormGroup from "@mui/material/FormGroup"
 import FormLabel from "@mui/material/FormLabel"
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
-import { useFormik } from "formik"
+import { useFormik, FormikHelpers } from "formik"
 import { useAppSelector } from "app/store"
-import { loginTC } from "features/login/authSlice"
 import { Navigate } from "react-router-dom"
 import { useDispatch } from "react-redux"
+import { authThunks } from "features/auth/model/authSlice"
+import { BaseResponseType } from "common/types"
+import { selectIsLoggedIn } from "features/auth/model/auth.selectors"
 
 type ErrorsType = {
   email?: string
   password?: string
 }
 
-export type LoginType = {
-  email: string
-  password: string
-  rememberMe: boolean
-}
-
 export const Login = () => {
-  const isLoggedIn = useAppSelector<boolean>((state) => state.auth.isLoggedIn)
+  const isLoggedIn = useAppSelector<boolean>(selectIsLoggedIn)
   const dispatch = useDispatch<any>()
   const formik = useFormik({
     initialValues: {
@@ -35,20 +31,29 @@ export const Login = () => {
     },
     validate: (values) => {
       const errors: ErrorsType = {}
-      if (!values.email) {
-        errors.email = "Email is required"
-      } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-        errors.email = "Invalid email address"
-      }
-      if (!values.password) {
-        errors.password = "Password is required"
-      } else if (values.password.length < 4) {
-        errors.password = "Password is less than 4 symbols"
-      }
-      return errors
+      // if (!values.email) {
+      //   errors.email = "Email is required"
+      // } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+      //   errors.email = "Invalid email address"
+      // }
+      // if (!values.password) {
+      //   errors.password = "Password is required"
+      // } else if (values.password.length < 4) {
+      //   errors.password = "Password is less than 4 symbols"
+      // }
+      // return errors
     },
-    onSubmit: (values) => {
-      dispatch(loginTC(values))
+    onSubmit: (values, formikHelpers) => {
+      dispatch(authThunks.login({ data: values }))
+        .unwrap()
+        .then((res: any) => {})
+        .catch((e: BaseResponseType) => {
+          if (e.fieldsErrors) {
+            e.fieldsErrors.forEach((el) => {
+              formikHelpers.setFieldError(el.field, el.error)
+            })
+          }
+        })
       formik.resetForm()
     },
   })
@@ -74,11 +79,9 @@ export const Login = () => {
             </FormLabel>
             <FormGroup>
               <TextField label="Email" margin="normal" {...formik.getFieldProps("email")} />
-              {formik.touched.email && formik.errors.email && <div style={{ color: "red" }}>{formik.errors.email}</div>}
+              {formik.errors.email ? <div style={{ color: "red" }}>{formik.errors.email}</div> : null}
               <TextField type="password" label="Password" margin="normal" {...formik.getFieldProps("password")} />
-              {formik.touched.password && formik.errors.password && (
-                <div style={{ color: "red" }}>{formik.errors.password}</div>
-              )}
+              {formik.errors.password ? <div style={{ color: "red" }}>{formik.errors.password}</div> : null}
               <FormControlLabel
                 label={"Remember me"}
                 control={<Checkbox />}

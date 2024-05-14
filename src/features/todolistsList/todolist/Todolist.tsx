@@ -1,15 +1,15 @@
 import React, { FC, memo, useCallback, useEffect, useMemo } from "react"
-import { AddItemForm } from "components/addItemForm/AddItemForm"
-import { EditableSpan } from "components/editableSpan/EditableSpan"
 import Button from "@mui/material/Button"
 import { ButtonProps } from "@mui/material/"
 import IconButton from "@mui/material/IconButton"
 import Delete from "@mui/icons-material/Delete"
 import { Task } from "./task/Task"
-import { TaskStatuses, TaskType } from "api/todolists-api"
 import { FilterValuesType, TodoListDomainType } from "features/todolistsList/todolistsSlice"
-import { fetchTasksTC } from "features/todolistsList/tasksSlice"
 import { useDispatch } from "react-redux"
+import { tasksThunks } from "features/todolistsList/tasksSlice"
+import { TaskStatuses } from "common/enums"
+import { TaskType } from "features/todolistsList/todolistsApi.types"
+import { AddItemForm, EditableSpan } from "common/components"
 
 export type TodoListPropsType = {
   todoList: TodoListDomainType
@@ -43,7 +43,7 @@ export const Todolist: FC<TodoListPropsType> = memo(
       if (demoMode) {
         return
       }
-      dispatch(fetchTasksTC(todoList.id))
+      dispatch(tasksThunks.fetchTasks(todoList.id))
     }, [])
     const onClickAllHandler = useCallback(() => changeFilter(todoList.id, "all"), [changeFilter, todoList.id])
     const onClickActiveHandler = useCallback(() => changeFilter(todoList.id, "active"), [changeFilter, todoList.id])

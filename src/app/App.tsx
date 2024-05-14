@@ -2,24 +2,25 @@ import React, { useCallback, useEffect, useState } from "react"
 import "./App.css"
 import Menu from "@mui/icons-material/Menu"
 import { TodoListsList } from "features/todolistsList/TodoListsList"
-import IntegrationNotistack from "../components/errorSnackbar/ErrorSnackbar"
-import { RequestStatusType, setIsInitializedTC } from "app/appSlice"
+import IntegrationNotistack from "../common/components/errorSnackbar/ErrorSnackbar"
+import { RequestStatusType } from "app/appSlice"
 import AppBar from "@mui/material/AppBar"
 import Container from "@mui/material/Container"
 import IconButton from "@mui/material/IconButton"
 import LinearProgress from "@mui/material/LinearProgress"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
-import { useAppSelector } from "./store"
+import { AppRootState, useAppSelector } from "./store"
 import { Navigate, Route, Routes } from "react-router-dom"
-import { Login } from "features/login/Login"
-import { logoutTC } from "features/login/authSlice"
+import { Login } from "features/auth/ui/Login"
 import CircularProgress from "@mui/material/CircularProgress"
 import { useDispatch } from "react-redux"
-import { MenuButton } from "components/menuButton/MenuButton"
+import { MenuButton } from "common/components/menuButton/MenuButton"
 import { createTheme, ThemeProvider } from "@mui/material/styles"
 import Switch from "@mui/material/Switch"
 import CssBaseline from "@mui/material/CssBaseline"
+import { authThunks } from "features/auth/model/authSlice"
+import { selectIsInitialized, selectIsLoggedIn, selectStatus } from "./selectors"
 
 type AppPropsType = {
   demoMode?: boolean
@@ -27,16 +28,16 @@ type AppPropsType = {
 type ThemeMode = "dark" | "light"
 
 function App({ demoMode = false }: AppPropsType) {
-  const status = useAppSelector<RequestStatusType>((state) => state.app.status)
-  const isInitialized = useAppSelector<boolean>((state) => state.app.isInitialized)
-  const isLoggedIn = useAppSelector<boolean>((state) => state.auth.isLoggedIn)
+  const status = useAppSelector<RequestStatusType>(selectStatus)
+  const isInitialized = useAppSelector<boolean>(selectIsInitialized)
+  const isLoggedIn = useAppSelector<boolean>(selectIsLoggedIn)
   const dispatch = useDispatch<any>()
   const logOutHandler = useCallback(() => {
-    dispatch(logoutTC())
+    dispatch(authThunks.logout())
   }, [])
   const [themeMode, setThemeMode] = useState<ThemeMode>("light")
   useEffect(() => {
-    dispatch(setIsInitializedTC())
+    dispatch(authThunks.initializeApp())
   }, [])
 
   if (!isInitialized) {
@@ -92,7 +93,7 @@ function App({ demoMode = false }: AppPropsType) {
         <Container fixed>
           <Routes>
             <Route path={"/"} element={<TodoListsList />}></Route>
-            <Route path={"/login"} element={<Login />}></Route>
+            <Route path={"/auth"} element={<Login />}></Route>
             <Route path={"/404"} element={<h1 style={{ textAlign: "center" }}>404: PAGE NOT FOUND</h1>}></Route>
             <Route path={"*"} element={<Navigate to={"/404"} />}></Route>
           </Routes>

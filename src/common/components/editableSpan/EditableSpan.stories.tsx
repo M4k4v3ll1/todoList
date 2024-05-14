@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from "@storybook/react"
 import React, { ChangeEvent, useState } from "react"
 import TextField from "@mui/material/TextField"
-import { EditableSpan } from "./EditableSpan"
+import { EditableSpan } from "common/components/editableSpan/EditableSpan"
 
 const meta: Meta<typeof EditableSpan> = {
   title: "TODOLISTS/EditableSpan Component",

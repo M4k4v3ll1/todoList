@@ -1,4 +1,4 @@
-import { AddItemForm, AddItemFormPropsType } from "./AddItemForm"
+import { AddItemForm, AddItemFormPropsType } from "common/components/addItemForm/AddItemForm"
 import { action } from "@storybook/addon-actions"
 import { Meta, StoryObj } from "@storybook/react"
 import React, { ChangeEvent, FC, KeyboardEvent, memo, useState } from "react"

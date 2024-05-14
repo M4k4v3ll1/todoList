@@ -1,9 +1,10 @@
 import React, { FC, memo, useCallback } from "react"
-import { SuperCheckbox } from "components/superCheckbox/SuperCheckbox"
-import { EditableSpan } from "components/editableSpan/EditableSpan"
+import { SuperCheckbox } from "common/components/superCheckbox/SuperCheckbox"
+import { EditableSpan } from "common/components/editableSpan/EditableSpan"
 import IconButton from "@mui/material/IconButton"
 import Delete from "@mui/icons-material/Delete"
-import { TaskStatuses, TaskType } from "api/todolists-api"
+import { TaskStatuses } from "common/enums"
+import { TaskType } from "features/todolistsList/todolistsApi.types"
 
 type TaskPropsType = {
   task: TaskType
