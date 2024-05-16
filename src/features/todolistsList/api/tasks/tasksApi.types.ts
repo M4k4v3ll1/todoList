@@ -4,12 +4,6 @@ export type CreateTaskArgs = {
   todoListID: string
   taskTitle: string
 }
-export type TodoListType = {
-  id: string
-  title: string
-  addedData: Date
-  order: number
-}
 export type TaskType = {
   description: string
   title: string

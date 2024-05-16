@@ -1,4 +1,4 @@
-import { AddItemForm, AddItemFormPropsType } from "common/components/addItemForm/AddItemForm"
+import { AddItemForm, Props } from "common/components/addItemForm/AddItemForm"
 import { action } from "@storybook/addon-actions"
 import { Meta, StoryObj } from "@storybook/react"
 import React, { ChangeEvent, FC, KeyboardEvent, memo, useState } from "react"
@@ -25,7 +25,7 @@ const callback = action('Button "add" was pressed inside the form')
 export default meta
 type Story = StoryObj<typeof AddItemForm>
 
-export const AddItemFormStory: FC<AddItemFormPropsType> = memo(({ addItem, disabled }) => {
+export const AddItemFormStory: FC<Props> = memo(({ addItem, disabled }) => {
   const [newTaskTitle, setNewTaskTitle] = useState("")
   const [error, setError] = useState<string | null>("Title is required")
   const onChangeNewTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
@@ -67,9 +67,9 @@ export const AddItemFormStory: FC<AddItemFormPropsType> = memo(({ addItem, disab
   )
 })
 
-export const AddItemFormWithErrorStory: Story = {
-  render: () => <AddItemFormStory addItem={action("Button clicked inside form")} />,
-}
-export const AddItemFormDisabledExample: Story = {
-  render: () => <AddItemFormStory addItem={action("Button clicked inside form")} disabled={true} />,
-}
+// export const AddItemFormWithErrorStory: Story = {
+//   render: () => <AddItemFormStory addItem={action("Button clicked inside form")} />,
+// }
+// export const AddItemFormDisabledExample: Story = {
+//   render: () => <AddItemFormStory addItem={action("Button clicked inside form")} disabled={true} />,
+// }

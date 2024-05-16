@@ -1,9 +1,9 @@
 import { action } from "@storybook/addon-actions"
-import { Task } from "./Task"
+import { Task } from "features/todolistsList/ui/todolist/Tasks/task/Task"
 import { Meta, StoryObj } from "@storybook/react"
 import { useState } from "react"
 import { TaskPriorities, TaskStatuses } from "common/enums"
-import { TaskType } from "features/todolistsList/todolistsApi.types"
+import { TaskType } from "features/todolistsList/api/tasks/tasksApi.types"
 
 type Story = StoryObj<typeof Task>
 
@@ -29,20 +29,7 @@ const meta: Meta<typeof Task> = {
     },
     todoListID: "12",
   },
-  argTypes: {
-    changeTaskStatus: {
-      description: "Status is changed",
-      action: "clicked",
-    },
-    changeTaskTitle: {
-      description: "Title is changed",
-      action: "clicked",
-    },
-    removeTasks: {
-      description: "Task is removed",
-      action: "clicked",
-    },
-  },
+  argTypes: {},
 }
 
 export default meta
@@ -84,13 +71,5 @@ export const TaskStory = () => {
     setTask({ ...task, status: TaskStatuses.Completed ? TaskStatuses.New : TaskStatuses.Completed })
   }
 
-  return (
-    <Task
-      task={task}
-      todoListID={todoListID}
-      removeTasks={action("Task is removed")}
-      changeTaskStatus={changeTaskStatusHandler}
-      changeTaskTitle={action("Title is changed")}
-    />
-  )
+  return <Task task={task} todoListID={todoListID} />
 }

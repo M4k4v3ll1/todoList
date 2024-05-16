@@ -1,6 +1,6 @@
 import { TypedUseSelectorHook, useSelector } from "react-redux"
-import { todoListsReducer } from "features/todolistsList/todolistsSlice"
-import { tasksReducer } from "features/todolistsList/tasksSlice"
+import { todoListsReducer } from "features/todolistsList/model/todolists/todolistsSlice"
+import { tasksReducer } from "features/todolistsList/model/tasks/tasksSlice"
 import { appReducer } from "app/appSlice"
 import { authReducer } from "features/auth/model/authSlice"
 import { configureStore } from "@reduxjs/toolkit"

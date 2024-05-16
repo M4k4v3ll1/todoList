@@ -4,7 +4,7 @@ import {
   todoListsActions,
   todoListsReducer,
   todoListsThunks,
-} from "features/todolistsList/todolistsSlice"
+} from "features/todolistsList/model/todolists/todolistsSlice"
 import { v1 } from "uuid"
 import { ActionTypeForTests } from "common/types/ActionTypeForTests"
 

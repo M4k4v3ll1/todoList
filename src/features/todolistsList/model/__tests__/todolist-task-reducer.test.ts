@@ -1,10 +1,10 @@
-import { tasksReducer, TasksStateType } from "features/todolistsList/tasksSlice"
+import { tasksReducer, TasksStateType } from "features/todolistsList/model/tasks/tasksSlice"
 import {
   TodoListDomainType,
   todoListsActions,
   todoListsReducer,
   todoListsThunks,
-} from "features/todolistsList/todolistsSlice"
+} from "features/todolistsList/model/todolists/todolistsSlice"
 import { ActionTypeForTests } from "common/types/ActionTypeForTests"
 
 test("IDs of tasks and todolists should be equal", () => {

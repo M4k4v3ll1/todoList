@@ -1,5 +1,10 @@
-import { tasksReducer, TasksStateType, tasksThunks } from "features/todolistsList/tasksSlice"
-import { TodoListDomainType, todoListID1, todoListID2, todoListsThunks } from "features/todolistsList/todolistsSlice"
+import { tasksReducer, TasksStateType, tasksThunks } from "features/todolistsList/model/tasks/tasksSlice"
+import {
+  TodoListDomainType,
+  todoListID1,
+  todoListID2,
+  todoListsThunks,
+} from "features/todolistsList/model/todolists/todolistsSlice"
 import { ActionTypeForTests } from "common/types/ActionTypeForTests"
 import { TaskPriorities, TaskStatuses } from "common/enums"
 

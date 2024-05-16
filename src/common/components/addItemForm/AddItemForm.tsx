@@ -2,33 +2,43 @@ import React, { ChangeEvent, FC, KeyboardEvent, memo, useState } from "react"
 import IconButton from "@mui/material/IconButton"
 import TextField from "@mui/material/TextField"
 import ControlPoint from "@mui/icons-material/ControlPoint"
+import { BaseResponseType } from "common/types"
 
-export type AddItemFormPropsType = {
-  addItem: (newTaskTitle: string) => void
+export type Props = {
+  addItem: (newTaskTitle: string) => Promise<any>
   disabled?: boolean
 }
-export const AddItemForm: FC<AddItemFormPropsType> = memo(({ addItem, disabled = false }) => {
-  const [newTaskTitle, setNewTaskTitle] = useState("")
+export const AddItemForm = ({ addItem, disabled = false }: Props) => {
+  const [newTitle, setNewTitle] = useState("")
   const [error, setError] = useState<string | null>(null)
-  const onChangeNewTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setNewTaskTitle(e.currentTarget.value)
+  const changeTitleHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewTitle(e.currentTarget.value)
   }
-  const onClickAddTaskHandler = () => {
-    if (newTaskTitle.trim() !== "") {
-      addItem(newTaskTitle.trim())
-      setNewTaskTitle("")
+  const addNewItemHandlerUtility = (newTitle: string) => {
+    addItem(newTitle.trim())
+      .then((res) => {
+        setNewTitle("")
+      })
+      .catch((err: BaseResponseType) => {
+        if (err?.resultCode) {
+          setError(err.messages[0])
+        }
+      })
+  }
+  const addNewItemHandler = () => {
+    if (newTitle.trim() !== "") {
+      addNewItemHandlerUtility(newTitle)
     } else {
       setError("Title is required")
     }
   }
-  const onKeyPressAddTaskHandler = (e: KeyboardEvent<HTMLInputElement>) => {
+  const addItemOnKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
     if (error) {
       setError(null)
     }
-    if (e.charCode === 13 && newTaskTitle.trim() !== "") {
-      addItem(newTaskTitle)
-      setNewTaskTitle("")
-    } else if (e.charCode === 13 && newTaskTitle.trim() === "") {
+    if (e.charCode === 13 && newTitle.trim() !== "") {
+      addNewItemHandlerUtility(newTitle)
+    } else if (e.charCode === 13 && newTitle.trim() === "") {
       setError("Title is required")
     }
   }
@@ -37,16 +47,16 @@ export const AddItemForm: FC<AddItemFormPropsType> = memo(({ addItem, disabled =
       <TextField
         error={!!error}
         helperText={error}
-        value={newTaskTitle}
+        value={newTitle}
         variant={"outlined"}
         label={"Add text"}
-        onChange={onChangeNewTitleHandler}
-        onKeyPress={onKeyPressAddTaskHandler}
+        onChange={changeTitleHandler}
+        onKeyPress={addItemOnKeyPressHandler}
         disabled={disabled}
       />
-      <IconButton onClick={onClickAddTaskHandler} disabled={disabled} color={"primary"}>
+      <IconButton onClick={addNewItemHandler} disabled={disabled} color={"primary"}>
         <ControlPoint />
       </IconButton>
     </div>
   )
-})
+}
